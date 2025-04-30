@@ -1,0 +1,18 @@
+v 4
+file . "Komponenten/ALU/gen_xor.vhdl" "344ce86b6a6d70da74e4f724a866ae18335599cd" "20250430063228.290":
+  entity gen_xor at 1( 0) + 0 on 20;
+  architecture structure of gen_xor at 17( 329) + 0 on 21;
+file . "Komponenten/ALU/variable_bit_add.vhdl" "95b482d2d488a3022258df2d51aa62f6b495bc7d" "20250430063228.277":
+  entity variable_bit_add at 1( 0) + 0 on 16;
+  architecture structure of variable_bit_add at 22( 518) + 0 on 17;
+file . "Komponenten/ALU/half_add.vhdl" "5cca96b46ed59278fd95b7cc6f308e3b1492fb82" "20250430063228.262":
+  entity half_add at 1( 0) + 0 on 12;
+  architecture behave of half_add at 13( 178) + 0 on 13;
+file . "Packages/constant_package.vhdl" "e027699f944d9cc7d71c12e7f3ebab3b6a9a615c" "20250430063228.252":
+  package constant_package at 15( 514) + 0 on 11;
+file . "Komponenten/ALU/full_add.vhdl" "928eb441113ad73a83a629364c5662f722ba4b53" "20250430063228.270":
+  entity full_add at 1( 0) + 0 on 14;
+  architecture behave of full_add at 13( 206) + 0 on 15;
+file . "Komponenten/ALU/gen_or.vhdl" "1c1a6f2f637fc22082412a0138fe41e4e5be3d1e" "20250430063228.283":
+  entity gen_or at 1( 0) + 0 on 18;
+  architecture structure of gen_or at 17( 327) + 0 on 19;

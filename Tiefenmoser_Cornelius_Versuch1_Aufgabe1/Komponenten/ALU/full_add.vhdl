@@ -5,18 +5,18 @@ entity full_add is
     port(
         -- in: a , b, c (carry)
         PI_A, PI_B, PI_C: in std_logic;
-        PO_R, PO_C: out std_logic;
+        PO_R, PO_C: out std_logic
     );
 end full_add;    
 
 
-architecture behave of half_add is
+architecture behave of full_add is
     signal s_sum , s_c1, s_c2 : std_logic;
 
     component half_add
         port(
             a, b: in std_logic;
-            r, c: in std_logic
+            r, c: out std_logic
         );
     end component;
 

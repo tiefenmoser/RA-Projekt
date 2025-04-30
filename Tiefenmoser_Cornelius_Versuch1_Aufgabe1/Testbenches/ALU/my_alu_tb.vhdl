@@ -36,7 +36,7 @@ architecture behavior of my_alu_tb is
 begin
 
   -- Instantiate ALU
-  lu1 : entity work.my_alu
+  lu1 : entity work.alu
     generic map (DATA_WIDTH_GEN, ALU_OPCODE_WIDTH)
     port map (
       pi_op1       => s_op1,
