@@ -27,11 +27,6 @@ architecture structure of variable_bit_add is
     genthing: 
         for i in 0 to G_DATA_WIDTH-1 generate
             s_ib(i) <= PI_B(i) xor PI_SUBTRACT;
-    --since we init s_carry(0) with PI_CARRY THE first case should be already covered
-    --      initialcase: if i = 0 generate  
-    --            fa_behave: entity work.full_add(behave) 
-    --            port map (PI_A(i), s_ib(i),PI_CARRY,PO_RESULT(i),s_carry(i));
-    --            end generate;
             commoncase: if i /= G_DATA_WIDTH-1 generate
                 fa_behave: entity work.full_add(behave)
                 port map (PI_A(i),s_ib(i),s_carry(i),PO_RESULT(i),s_carry(i+1));

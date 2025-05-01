@@ -1,3 +1,7 @@
+-- 1. Partner: Cornelius Tiefenmoser
+-- 2. Partner: Maxi Gromut
+-- Teile der Logik hauptsächlich die Shifter logik von Leonard Habrom
+
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
@@ -19,16 +23,20 @@ end alu;
 
 
 architecture behavior of alu is 
-    signal s_op1,s_op2,s_addr,s_subr,s_andr,s_orr,s_xorr,s_sllr,s_srlr,s_srar : std_logic_vector(G_DATA_WIDTH -1 downto 0); 
-    begin
-        --can i do this
-        ADD: entity work.variable_bit_add generic map (G_DATA_WIDTH) port map (s_op1,s_op2,'0',s_addr);
-        SUB: entity work.variable_bit_add generic map (G_DATA_WIDTH) port map (s_op1,s_op2,'1',s_addr);
-        ANDi:  entity work.gen_xor generic map (G_DATA_WIDTH) port map (s_op1, s_op2, s_xorr); 
+    signal s_op1,s_op2,s_addr,s_subr,s_andr,s_orr,s_xorr,s_shiftr : std_logic_vector(G_DATA_WIDTH -1 downto 0) := (others => '0'); 
+    signal s_addc,s_subc,s_shift_type,s_shift_direction: std_logic := '0';
+	begin
+		s_op1 <= pi_op1;
+		s_op2 <= pi_op2;
+
+        ADD: entity work.variable_bit_add generic map (G_DATA_WIDTH) port map (s_op1,s_op2,'0',s_addr,s_addc);
+        SUB: entity work.variable_bit_add generic map (G_DATA_WIDTH) port map (s_op1,s_op2,'1',s_subr,s_subc);
+        ANDi:  entity work.gen_and generic map (G_DATA_WIDTH) port map (s_op1, s_op2, s_andr); 
         ORi:  entity work.gen_or generic map (G_DATA_WIDTH) port map (s_op1, s_op2, s_orr); 
         XORi:  entity work.gen_xor generic map (G_DATA_WIDTH) port map (s_op1, s_op2, s_xorr); 
-        
-        --TODO: make the shifter
+        Shift: entity work.shifter generic map (G_DATA_WIDTH) port map (s_op1, s_op2, s_shift_type, s_shift_direction, s_shiftr);
+
+
         
         with pi_aluOp select
             po_aluOut <= s_addr when ADD_ALU_OP,
@@ -36,9 +44,32 @@ architecture behavior of alu is
                          s_andr when AND_ALU_OP,
                          s_orr  when OR_ALU_OP,
                          s_xorr when XOR_ALU_OP,
-                         s_sllr when SLL_ALU_OP,
-                         s_srlr when SRL_ALU_OP,
-                         s_srar when SRA_ALU_OP;
+                         s_shiftr when SLL_ALU_OP,
+                         s_shiftr when SRL_ALU_OP,
+                         s_shiftr when SRA_ALU_OP,
+				 		 pi_op1 when others;
+
+
+		with pi_aluOp select
+				po_carryOut <= s_addc when ADD_ALU_OP,
+							   s_subc when SUB_ALU_OP,
+							   '0'    when others;
+		with pi_aluOp select
+				s_shift_type <= '0' when SLL_ALU_OP,
+								'0' when SRL_ALU_OP,
+								'1' when SRA_ALU_OP,
+								'0' when others;
+		with pi_aluOp select
+					s_shift_direction <= '0' when SLL_ALU_OP,
+								  	     '1' when SRL_ALU_OP,
+									     '1' when SRA_ALU_OP,
+									     '0' when others;
+
+
+
+
+
+
 
 
 end behavior;

@@ -15,8 +15,8 @@ architecture behave of full_add is
 
     component half_add
         port(
-            a, b: in std_logic;
-            r, c: out std_logic
+            PI_A, PI_B: in std_logic;
+            PO_R, PO_C: out std_logic
         );
     end component;
 

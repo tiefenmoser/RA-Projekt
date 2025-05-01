@@ -17,10 +17,10 @@ library ieee;
   use ieee.math_real.all;
   use work.constant_package.all;
 
-entity my_alu_tb is
-end entity my_alu_tb;
+entity alu_tb is
+end entity alu_tb;
 
-architecture behavior of my_alu_tb is
+architecture behavior of alu_tb is
 
   -- Signal declarations
   signal s_op1            : std_logic_vector(DATA_WIDTH_GEN - 1 downto 0) := (others => '0');
