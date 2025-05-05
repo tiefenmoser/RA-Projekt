@@ -21,13 +21,13 @@ architecture behavior of Single_Port_RAM_tb is
     signal s_expected : std_logic_vector( 15 downto 0);
     
     -- Why do i get different results for different clock times??????
-    constant c_clk_period : time := 2 ns;
+    constant c_clk_period : time := 10 ns;
 
     begin
     -- CLK Process aus der übung von Stefanie Häberle 
     clk_process : process
         begin
-            while now < 400 ns loop  -- Simulation fuer 200 ns
+            while now < 200 ns loop  -- Simulation fuer 200 ns
                 s_clk <= '0';
                 wait for c_clk_period / 2;
                 s_clk <= '1';
@@ -56,12 +56,12 @@ architecture behavior of Single_Port_RAM_tb is
             -- the 32 is there for a reason since 2**0 != 000....00 and we want to test from 0 to 2**31
             for i in 0 to 31 loop
                 
-                -- s_data <= (others => '1');
-                -- s_we <= '1'; 
-                -- s_expected <= (others => '0');
-                -- s_rst <= '1';
-                -- wait for c_clk_period;
-                -- assert(s_dataout = s_expected) report ("Doesnt reset to 0") severity error;
+                s_data <= (others => '1');
+                s_we <= '1'; 
+                s_expected <= (others => '0');
+                s_rst <= '1';
+                wait for c_clk_period;
+                assert(s_dataout = s_expected) report ("Doesnt reset to 0") severity error;
                 
                 
                 s_rst <= '0'; 
@@ -86,7 +86,7 @@ architecture behavior of Single_Port_RAM_tb is
                 assert(s_dataout = s_expected) report ("Data sets to 1 despite we = 0") severity error;
 
                 assert false report "End of test for address: " & to_string(s_addr) severity note;
-                s_addr <= std_logic_vector(to_unsigned(2 ** i,s_addr'length) );
+                s_addr <= std_logic_vector(to_unsigned(2**i,s_addr'length) ); -- Random ass Index error TODO später oder morgen
             end loop;
         end process;                
 
