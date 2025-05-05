@@ -11,8 +11,8 @@ entity single_port_ram is
     port(
         pi_data : in std_logic_vector (G_word_width-1 downto 0) := (others => '0');
         pi_addr : in std_logic_vector (G_addr_width-1 downto 0) := (others => '0');
-        pi_we,pi_clk,pi_rst : in std_logic := '0';
-        
+        pi_we,pi_rst : in std_logic := '0';
+        pi_clk : in std_logic;
         po_data : out std_logic_vector(G_word_width-1 downto 0) := (others => '0')
     );
 end entity;
@@ -23,16 +23,18 @@ architecture behavior of single_port_ram is
     signal RAM : memory_array := (others => (others => '0'));
 
 begin
-    ram_process: process (pi_clk,pi_rst,pi_we)
+    ram_process: process (pi_rst,pi_clk)
         begin
-            if(pi_rst = '1') then 
-                RAM <= (others => (others => '0')); -- set all bits of the memory array to 0
-                po_data <= RAM(to_integer(unsigned(pi_addr)));
-            elsif rising_edge(pi_clk) then
-                if(pi_we = '1') then --why is this delayed by an entire cycle
+            if pi_rst = '1' then 
+                RAM <= (others => (others => '0')); 
+                po_data <= RAM(to_integer(unsigned(pi_addr))); -- TODO: this might have the update problem too might need the fix to but idk removes the ability to test ngl
+            elsif rising_edge(pi_clk) then 
+                if pi_we = '1' then  
                     RAM(to_integer(unsigned(pi_addr))) <= pi_data;
+                    po_data <= pi_data; 
+                    -- if we set the po_data to the ram of pi_addr on a write enable case we get old data since it cant update faste enough
+                    -- idk how to fix this better than this
                 end if;
-                po_data <= RAM(to_integer(unsigned(pi_addr)));
             end if;
         end process;
 end architecture;
