@@ -28,7 +28,6 @@ architecture behavior of gen_mux_tb is
 
 					po_result => s_out(c_testWidths(i)-1 downto 0)
                 );
-
             mux_test: process is 
                 begin
 					s_sel <= '0';

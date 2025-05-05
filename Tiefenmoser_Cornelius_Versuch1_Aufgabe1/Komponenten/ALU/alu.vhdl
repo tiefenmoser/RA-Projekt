@@ -64,13 +64,6 @@ architecture behavior of alu is
 								  	     '1' when SRL_ALU_OP,
 									     '1' when SRA_ALU_OP,
 									     '0' when others;
-
-
-
-
-
-
-
-
+                                         
 end behavior;
 
