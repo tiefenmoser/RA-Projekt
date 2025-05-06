@@ -15,7 +15,7 @@ architecture behavior of Single_Port_RAM_tb is
     signal s_clk, s_rst, s_we: std_logic := '0';
     
     
-    signal s_addr : std_logic_vector (31 downto 0) := (others => '0');
+    signal s_addr : std_logic_vector (15 downto 0) := (others => '0');
     signal s_data : std_logic_vector(15 downto 0);
     signal s_dataout :std_logic_vector (15 downto 0);
     signal s_expected : std_logic_vector( 15 downto 0);
@@ -54,8 +54,8 @@ architecture behavior of Single_Port_RAM_tb is
         begin
             s_addr <= (others => '0');
             -- cant test for 32 adr range as ghdl gives me weird range bug errors
-            for i in 0 to 15 loop
-                
+            for i in 0 to 16 loop
+                -- after 5 loops we always get 0 back no matter what adresses i give the programm and idk why :(
                 s_data <= (others => '1');
                 s_we <= '1'; 
                 s_expected <= (others => '0');
@@ -88,6 +88,7 @@ architecture behavior of Single_Port_RAM_tb is
                 assert false report "End of test for address: " & to_string(s_addr) severity note;
                 s_addr <= std_logic_vector(to_unsigned(2**i,s_addr'length) ); 
             end loop;
+            wait;
         end process;                
 
 
