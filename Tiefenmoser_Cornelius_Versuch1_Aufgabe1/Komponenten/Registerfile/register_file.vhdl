@@ -16,14 +16,14 @@ use work.types_package.all;
 entity register_file is
     generic(
         G_reg_adr_width : integer := REG_ADR_WIDTH;
-        G_word_with : integer := WORD_WIDTH
+        G_word_width : integer := WORD_WIDTH
     );
     port(
         pi_clk,pi_rst,pi_writeEnable : in std_logic;
         pi_readRegAddr1,pi_readRegAddr2,pi_writeRegAddr: in std_logic_vector( G_reg_adr_width-1 downto 0);
-        pi_writeRegData : in std_logic_vector(G_word_with-1 downto 0);
+        pi_writeRegData : in std_logic_vector(G_word_width-1 downto 0);
         
-        po_readRegData1,po_readRegData2 : out std_logic_vector (G_reg_adr_width -1 downto 0)
+        po_readRegData1,po_readRegData2 : out std_logic_vector (G_word_width -1 downto 0)
     );
 end entity;
 
@@ -40,7 +40,9 @@ architecture structure of register_file is
                     po_readRegData2 <= REG(to_integer(unsigned(pi_readRegAddr2)));
                 elsif rising_edge(pi_clk) then
                     if pi_writeEnable = '1' then
-                        REG(to_integer(unsigned(pi_writeRegAddr))) <= pi_writeRegData;
+                        if to_integer(unsigned(pi_writeRegAddr)) /= 0 then -- ensures x0 will always be 0
+                            REG(to_integer(unsigned(pi_writeRegAddr))) <= pi_writeRegData;
+                        end if;
                         -- since i couldnt really find out what the behavior should be if we set the data of the to be read adresses
                         -- i will not do the hack fix from the single port ram and the logic to find out if the write and read adresses match 
                         end if;

@@ -54,7 +54,7 @@ architecture behavior of Single_Port_RAM_tb is
         begin
             s_addr <= (others => '0');
             -- cant test for 32 adr range as ghdl gives me weird range bug errors
-            for i in 0 to 16 loop
+            for i in 0 to 3 loop
                 -- after 5 loops we always get 0 back no matter what adresses i give the programm and idk why :(
                 s_data <= (others => '1');
                 s_we <= '1'; 

@@ -21,8 +21,9 @@ end entity;
 
 architecture behavior of single_port_ram is
     -- should we use our own or the one in type_packages????
-    type memory_array is array (0 to (2 ** G_addr_width) - 1 ) of std_logic_vector(G_word_width-1 downto 0);
-    signal RAM : memory_array := (others => (others => '0'));
+
+    -- type memory_array is array (0 to (2 ** G_addr_width) - 1 ) of std_logic_vector(G_word_width-1 downto 0);
+    signal RAM : memory := (others => (others => '0'));
 
 begin
     ram_process: process (pi_rst,pi_clk)
