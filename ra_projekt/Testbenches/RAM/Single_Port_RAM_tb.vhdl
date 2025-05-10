@@ -37,7 +37,7 @@ architecture behavior of Single_Port_RAM_tb is
     end process;
 
     ram:entity work.single_port_ram
-        generic map(16,32)
+        generic map(16,16)
         port map(
             pi_data => s_data,
             pi_addr => s_addr,

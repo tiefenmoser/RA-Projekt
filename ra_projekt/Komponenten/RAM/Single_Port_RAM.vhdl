@@ -1,3 +1,11 @@
+-- Laboratory RA solutions/versuch2
+-- Sommersemester 25
+-- Group Details
+-- Lab Date:
+-- 1. Participant First and Last Name: Cornelius Tiefenmoser
+-- 2. Participant First and Last Name: Maxi Gromut
+
+
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
@@ -22,18 +30,18 @@ end entity;
 architecture behavior of single_port_ram is
     -- should we use our own or the one in type_packages????
 
-    -- type memory_array is array (0 to (2 ** G_addr_width) - 1 ) of std_logic_vector(G_word_width-1 downto 0);
-    signal RAM : memory := (others => (others => '0'));
+    type memory_array is array (0 to (2 ** G_addr_width) - 1 ) of std_logic_vector(G_word_width-1 downto 0);
+    signal RAM : memory_array := (others => (others => '0'));
 
 begin
     ram_process: process (pi_rst,pi_clk)
         begin
             if pi_rst = '1' then 
                 RAM <= (others => (others => '0')); 
-                po_data <= RAM(to_integer(unsigned(pi_addr))); -- TODO: this might have the update problem too might need the fix to but idk removes the ability to test ngl
+                po_data <= RAM(to_integer(unsigned(pi_addr))); 
             elsif rising_edge(pi_clk) then 
                 po_data <= RAM(to_integer(unsigned(pi_addr)));
-                if pi_we = '1' then   --for some reason this doesnt work after like adress 32
+                if pi_we = '1' then  
                     RAM(to_integer(unsigned(pi_addr))) <= pi_data;
                     po_data <= pi_data; 
                     -- if we set the po_data to the ram of pi_addr on a write enable case we get old data since it cant update faste enough
