@@ -4,6 +4,7 @@
 -- Lab Date:
 -- 1. Participant First and Last Name: Cornelius Tiefenmoser
 -- 2. Participant First and Last Name: Maxi Gromut
+-- 3. Participant First and Last Name: Rupert Honold
 
 library ieee;
 use ieee.std_logic_1164.all;
@@ -31,30 +32,25 @@ architecture arc of decoder is
             variable v_opcode : std_logic_vector (6 downto 0);
             variable v_insFormat : t_instruction_type ;
             begin
-                -- TODO: think of a better way to detect change not even sure if this works
                 v_func3 := pi_instruction(14 downto 12);
                 v_func7 := pi_instruction(31 downto 25);
                 v_opcode := pi_instruction(6 downto 0);
                 case v_opcode is
                     when R_INS_OP =>
-                        v_insFormat := rFormat; -- i think this is right
+                        v_insFormat := rFormat;
                     when others =>
+                        v_insFormat := nullFormat;
                 end case;
 
-                po_controlWord.REG_WRITE <= '1';
-                po_controlWord.ALU_OP <= v_func7(5) & v_func3;
                 
-                
-                -- case v_func3 is
-                --     when "000" => 
-                --         po_controlWord.REG_WRITE <= '1';
-                --         if v_func7(5) = '1' then
-                --             po_controlWord.ALU_OP <= SUB_ALU_OP;
-                --         elsif v_func7(5) = '0' then
-                --             po_controlWord.ALU_OP <= ADD_ALU_OP;
-                --         end if;
-                --     when others => 
-                -- end case;
+                case v_insFormat is
+                    when rFormat => 
+                        po_controlWord.REG_WRITE <= '1';
+                        po_controlWord.ALU_OP <= v_func7(5) & v_func3;
+                    when others => 
+                        po_controlWord.REG_WRITE <= '0';
+                        po_controlWord.ALU_OP <= (others => '0');
+                 end case;
         end process;    
     -- end solution!!
 end architecture;

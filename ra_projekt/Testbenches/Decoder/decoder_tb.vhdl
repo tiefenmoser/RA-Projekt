@@ -150,7 +150,9 @@ begin
     instr := (others => '0');
     func7 := "0" & "0" & "00000";
     func3 := "011";
-    s_instruction <= func7 & std_logic_vector(to_unsigned(v_rs2, REG_ADR_WIDTH)) & std_logic_vector(to_unsigned(v_rs1, REG_ADR_WIDTH)) & func3 & std_logic_vector(to_unsigned(v_rd, REG_ADR_WIDTH)) & "0000011"; -- R-Befehle haben alle den gleichen Opcode, daher hier hardkodiert
+    s_instruction <= func7 & std_logic_vector(to_unsigned(v_rs2, REG_ADR_WIDTH)) 
+    & std_logic_vector(to_unsigned(v_rs1, REG_ADR_WIDTH)) & func3 & std_logic_vector(to_unsigned(v_rd, REG_ADR_WIDTH)) 
+    & "0000011"; -- R-Befehle haben alle den gleichen Opcode, daher hier hardkodiert
 
     v_expectedControlWord.I_IMM_SEL := '0';
     v_expectedControlWord.ALU_OP    := "0000";
@@ -160,7 +162,7 @@ begin
     s_clk <= '0';
     wait for PERIOD / 2;
     assert (s_controlword = v_expectedcontrolword)
-    report "Error in R-Format decoding" severity error;
+    report "Error in R-Format decoding. Got Alu:" & to_string(s_controlword.ALU_OP) &" REG_WRITE: " & to_string(s_controlword.REG_WRITE) severity error;
 
     assert false
     report "end of test"

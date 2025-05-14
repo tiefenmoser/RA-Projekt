@@ -4,6 +4,7 @@
 -- Lab Date:
 -- 1. Participant First and Last Name: Cornelius Tiefenmoser
 -- 2. Participant First and Last Name: Maxi Gromut
+-- 3. Participant First and Last Name: Rupert Honold
 
 -- ========================================================================
 -- Description:  Sign extender for a RV32I processor. Takes the entire instruction
