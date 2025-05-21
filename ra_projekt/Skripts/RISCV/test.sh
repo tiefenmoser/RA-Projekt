@@ -35,7 +35,12 @@ ghdl -a --std=08 Komponenten/Register/controlwordregister.vhdl
 
 ghdl -a --std=08 RISCV/R_only_RISC_V.vhdl
 
-ghdl -a --std=08 Testbenches/RISCV/R_only_RISC_V_2_tb.vhdl
 
-ghdl -e --std=08 
+ghdl -a --std=08 Testbenches/RISCV/R_only_RISC_V_tb.vhdl
+ghdl -e --std=08 R_only_RISC_V_tb
+ghdl -r --std=08 R_only_RISC_V_tb --vcd=riscv.vcd
+
+
+ghdl -a --std=08 Testbenches/RISCV/R_only_RISC_V_2_tb.vhdl
+ghdl -e --std=08 R_only_RISC_V_2_tb
 ghdl -r --std=08 R_only_RISC_V_2_tb --vcd=riscv.vcd
