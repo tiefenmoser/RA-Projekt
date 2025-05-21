@@ -11,10 +11,10 @@ entity pipelineregister is
         G_DATA_WIDTH: integer := DATA_WIDTH_GEN
     );
     port(
-        pi_data : in std_logic_vector (G_DATA_WIDTH-1 downto 0);
+        pi_data : in std_logic_vector (G_DATA_WIDTH-1 downto 0) := (others => '0');
         pi_clk,pi_rst: in std_logic;
 
-        po_data : out std_logic_vector (G_DATA_WIDTH-1 downto 0)
+        po_data : out std_logic_vector (G_DATA_WIDTH-1 downto 0) := (others => '0')
     );
 end pipelineregister;
 

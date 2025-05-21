@@ -13,16 +13,9 @@ end full_add;
 architecture behave of full_add is
     signal s_sum , s_c1, s_c2 : std_logic;
 
-    component half_add
-        port(
-            PI_A, PI_B: in std_logic;
-            PO_R, PO_C: out std_logic
-        );
-    end component;
-
     begin
-        HA1:half_add port map (PI_A,PI_B,s_sum,s_c1);
-        HA2:half_add port map (s_sum,PI_C,PO_R,s_c2);
+        HA1: entity work.half_add port map (PI_A=> PI_A,PI_B => PI_B, PO_R => s_sum, PO_C =>s_c1);
+        HA2: entity work.half_add port map (s_sum,PI_C,PO_R,s_c2);
 
         PO_C <= s_c1 OR s_c2;
 end behave;
