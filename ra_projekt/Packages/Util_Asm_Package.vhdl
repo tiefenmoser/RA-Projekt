@@ -1,13 +1,6 @@
--- Laboratory RA solutions/versuch3
--- Sommersemester 25
--- Group Details
--- Lab Date:
--- 1. Participant First and Last Name: 
--- 2. Participant First and Last Name:
-
 -- ========================================================================
 -- Author:       Marcel Riess
--- Last updated: 05.08.2024
+-- Last updated: 05.05.2025
 -- Description:  Some asm-functions that help with writing shorter and more
 --               readable code. They are only used in testbenches!
 -- ========================================================================
@@ -360,7 +353,25 @@ PACKAGE BODY util_asm_package IS
       rs1 := STD_LOGIC_VECTOR(to_unsigned(token2, 5));
       rs2 := STD_LOGIC_VECTOR(to_unsigned(token3, 5));
       machine_word := funct7 & rs2 & rs1 & funct3 & rd & opcode;
+       -- begin solution:
+    ELSIF instr = "SLT" THEN
+      opcode := R_INS_OP; -- R-type
+      funct3 := "010";
+      funct7 := "0000000";
+      rd := STD_LOGIC_VECTOR(to_unsigned(token1, 5));
+      rs1 := STD_LOGIC_VECTOR(to_unsigned(token2, 5));
+      rs2 := STD_LOGIC_VECTOR(to_unsigned(token3, 5));
+      machine_word := funct7 & rs2 & rs1 & funct3 & rd & opcode;
 
+    ELSIF instr = "SLTU" THEN
+      opcode := R_INS_OP; -- R-type
+      funct3 := "011";
+      funct7 := "0000000";
+      rd := STD_LOGIC_VECTOR(to_unsigned(token1, 5));
+      rs1 := STD_LOGIC_VECTOR(to_unsigned(token2, 5));
+      rs2 := STD_LOGIC_VECTOR(to_unsigned(token3, 5));
+      machine_word := funct7 & rs2 & rs1 & funct3 & rd & opcode;
+       -- end solution!!
     ELSE
       -- Unsupported instruction
       machine_word := (OTHERS => 'X');

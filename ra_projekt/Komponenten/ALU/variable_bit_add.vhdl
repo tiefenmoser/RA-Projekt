@@ -18,14 +18,12 @@ entity variable_bit_add is
     );
 end variable_bit_add; 
 
---TODO:Test it i have no idea if this works ngl
 architecture structure of variable_bit_add is
     signal s_ib: std_logic_vector (G_DATA_WIDTH-1 downto 0);
     signal s_carry: std_logic_vector (G_DATA_WIDTH-1 downto 0);
     begin
     s_carry(0) <= PI_SUBTRACT;
-    genthing: 
-        for i in 0 to G_DATA_WIDTH-1 generate
+    genthing: for i in 0 to G_DATA_WIDTH-1 generate
             s_ib(i) <= PI_B(i) xor PI_SUBTRACT;
             commoncase: if i /= G_DATA_WIDTH-1 generate
                 fa_behave: entity work.full_add(behave)
