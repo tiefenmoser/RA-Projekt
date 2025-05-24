@@ -18,12 +18,15 @@ ghdl -a --std=08 Komponenten/ALU/gen_and.vhdl
 
 ghdl -a --std=08 Komponenten/ALU/shifter.vhdl
 
+ghdl -a --std=08 Komponenten/ALU/slt.vhdl
+ghdl -a --std=08 Komponenten/ALU/sltu.vhdl
+
 ghdl -a --std=08 Komponenten/ALU/alu.vhdl
 
-ghdl -a --std=08 Testbenches/ALU/alu_tb.vhdl
+ghdl -a --std=08 Testbenches/ALU/my_alu_tb.vhdl
 
-ghdl -e --std=08 alu_tb 
-ghdl -r --std=08 alu_tb --vcd=my_alu_tb.vcd
+ghdl -e --std=08 my_alu_tb 
+ghdl -r --std=08 my_alu_tb --vcd=my_alu_tb.vcd
 
 
 if [ "$1" == "t" ]; then

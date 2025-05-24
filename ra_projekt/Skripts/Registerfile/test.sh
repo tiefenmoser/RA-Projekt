@@ -3,7 +3,7 @@
 rm *.cf
 
 ghdl -a --std=08 Packages/constant_package.vhdl
-ghdl -a --std=08 Packages/type_packages.vhdl
+ghdl -a --std=08 Packages/types.vhdl
 
 ghdl -a --std=08 Komponenten/Registerfile/register_file.vhdl
 

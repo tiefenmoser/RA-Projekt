@@ -13,17 +13,17 @@ entity alu is
     G_OP_WIDTH    : integer := 4
     );
     port (
-        pi_op1, pi_op2 : in STD_LOGIC_VECTOR(G_DATA_WIDTH -1 downto 0); 
-        pi_aluOp : in STD_LOGIC_VECTOR(G_OP_WIDTH -1 downto 0);
+        pi_op1, pi_op2 : in STD_LOGIC_VECTOR(G_DATA_WIDTH -1 downto 0) := (others => '0'); 
+        pi_aluOp : in STD_LOGIC_VECTOR(G_OP_WIDTH -1 downto 0):= (others => '0');
         
-        po_aluOut : out STD_LOGIC_VECTOR(G_DATA_WIDTH -1 downto 0);
-        po_carryOut : out std_logic
+        po_aluOut : out STD_LOGIC_VECTOR(G_DATA_WIDTH -1 downto 0) := (others => '0');
+        po_carryOut : out std_logic := '0'
     );
 end alu;   
 
 
 architecture behavior of alu is 
-    signal s_op1,s_op2,s_addr,s_subr,s_andr,s_orr,s_xorr,s_shiftr : std_logic_vector(G_DATA_WIDTH -1 downto 0) := (others => '0'); 
+    signal s_op1,s_op2,s_addr,s_subr,s_andr,s_orr,s_xorr,s_shiftr,s_sltr,s_sltur : std_logic_vector(G_DATA_WIDTH -1 downto 0) := (others => '0'); 
     signal s_addc,s_subc,s_shift_type,s_shift_direction: std_logic := '0';
 	begin
 		s_op1 <= pi_op1;
@@ -35,7 +35,8 @@ architecture behavior of alu is
         ORi:  entity work.gen_or generic map (G_DATA_WIDTH) port map (s_op1, s_op2, s_orr); 
         XORi:  entity work.gen_xor generic map (G_DATA_WIDTH) port map (s_op1, s_op2, s_xorr); 
         Shift: entity work.shifter generic map (G_DATA_WIDTH) port map (s_op1, s_op2, s_shift_type, s_shift_direction, s_shiftr);
-
+        SLT: entity work.slt generic map (G_DATA_WIDTH) port map(s_op1,s_op2,s_sltr);
+        SLTU: entity work.sltu generic map (G_DATA_WIDTH) port map(s_op1,s_op2,s_sltur);
 
         
         with pi_aluOp select
@@ -47,6 +48,8 @@ architecture behavior of alu is
                          s_shiftr when SLL_ALU_OP,
                          s_shiftr when SRL_ALU_OP,
                          s_shiftr when SRA_ALU_OP,
+                         s_sltr when SLT_ALU_OP,
+                         s_sltur when SLTU_ALU_OP,
 				 		 pi_op1 when others;
 
 

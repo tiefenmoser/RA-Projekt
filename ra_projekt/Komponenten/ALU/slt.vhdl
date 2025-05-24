@@ -10,7 +10,7 @@ entity slt is
     port(
         pi_val1 , pi_val2: in std_logic_vector(G_data_width-1 downto 0);
 
-        po_dest : out std_logic_vector(G_data_width-1 downto 0)
+        po_value : out std_logic_vector(G_data_width-1 downto 0)
     );
 end slt;
 
@@ -18,7 +18,7 @@ end slt;
 architecture behave of slt is
     begin
         -- what is the difference between signed vs to_signed
-    po_dest <= std_logic_vector(to_signed(1,G_data_width)) when signed(pi_val1) < signed(pi_val2) else
+    po_value <= std_logic_vector(to_signed(1,G_data_width)) when signed(pi_val1) < signed(pi_val2) else
                std_logic_vector(to_signed(0,G_data_width));
         
 end architecture;    
