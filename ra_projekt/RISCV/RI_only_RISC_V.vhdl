@@ -23,7 +23,7 @@ library ieee;
 entity ri_only_RISC_V is
   generic (
     G_word_width :integer := WORD_WIDTH;
-    G_addr_width : integer ADR_WIDTH
+    G_addr_width : integer := ADR_WIDTH
   );
   port (
     pi_rst         : in    std_logic := '0';
@@ -66,7 +66,7 @@ architecture structure of ri_only_RISC_V is
   signal s_out_dreg1, s_out_dreg2, s_out_dreg3 : std_logic_vector(REG_ADR_WIDTH-1 downto 0):= (others => '0');
 
   -- Mux signals
-  signal s_in_default_mux ,s_out_mux : std_logic_vector (G_word_width -1 downto 0) := (others => '0');
+  signal s_in_default_mux,s_in_imm_mux  : std_logic_vector (G_word_width -1 downto 0) := (others => '0');
   -- ALU signals
   signal s_alu_op1,s_alu_op2,s_alu_out : std_logic_vector(G_word_width -1 downto 0):= (others => '0');
 
@@ -221,6 +221,14 @@ begin
         );
     -- end solution!!
 
+    im_reg : entity work.pipelineregister
+        generic map (G_word_width)
+        port map (
+            pi_data => s_out_I_signextended,
+            pi_clk => s_clk,
+            pi_rst => s_rst,
+            po_data => s_in_imm_mux
+        );
 
     ---********************************************************************
     ---* execute phase
@@ -231,9 +239,9 @@ begin
         generic map(G_word_width)
         port map(
             pi_first => s_in_default_mux,
-            pi_second => s_out_I_signextended,
+            pi_second => s_in_imm_mux,
             pi_sel => s_out_cwr1.I_IMM_SEL,
-            po_result => s_alu_op1 
+            po_result => s_alu_op2 
         );
 
 
@@ -243,7 +251,7 @@ begin
             pi_data => s_out_reg_op1,
             pi_clk => s_clk,
             pi_rst => s_rst,
-            po_data => s_in_default_mux
+            po_data => s_alu_op1
         );
 
     alu_reg_op2: entity work.pipelineregister
@@ -252,7 +260,7 @@ begin
             pi_data => s_out_reg_op2,
             pi_clk => s_clk,
             pi_rst => s_rst,
-            po_data => s_alu_op2
+            po_data => s_in_default_mux
         );
 
     ALU: entity work.alu
@@ -260,7 +268,7 @@ begin
         port map (
             pi_op1 => s_alu_op1,
             pi_op2 => s_alu_op2,
-            pi_aluOp => s_out_cwr1.ALU_OP, --??
+            pi_aluOp => s_out_cwr1.ALU_OP, 
             po_aluOut => s_alu_out
         );
      -- end solution!!

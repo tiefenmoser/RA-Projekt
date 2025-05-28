@@ -29,6 +29,7 @@ architecture arc of decoder is
         decoder_process: process (pi_instruction)
             variable v_func3 : std_logic_vector (2 downto 0) := (others => '0');
             variable v_func7 : std_logic_vector (6 downto 0) := (others => '0');
+            variable v_shift_I_4th_bit : std_logic := '0';
             variable v_opcode : std_logic_vector (6 downto 0) := (others => '0');
             variable v_insFormat : t_instruction_type := nullFormat;
             begin
@@ -45,6 +46,8 @@ architecture arc of decoder is
                 end case;
 
                 
+                po_controlWord <= control_word_init;
+                v_shift_I_4th_bit := v_func7(5) when v_func3 = SRA_ALU_OP(2 downto 0);
                 case v_insFormat is
                     when rFormat => 
                         po_controlWord.REG_WRITE <= '1';
@@ -52,10 +55,9 @@ architecture arc of decoder is
                     when iFormat =>
                         po_controlWord.REG_WRITE <= '1';
                         po_controlWord.I_IMM_SEL <= '1';
-                        po_controlWord.ALU_OP <= v_func7(5) & v_func3;
+                        po_controlWord.ALU_OP <= v_shift_I_4th_bit & v_func3;
                     when others => 
-                        po_controlWord.REG_WRITE <= '0';
-                        po_controlWord.ALU_OP <= (others => '0');
+                        po_controlWord <= control_word_init;
                  end case;
         end process;    
     -- end solution!!

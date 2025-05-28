@@ -69,9 +69,9 @@ BEGIN
         IF (cycle = 15) THEN check_register(  0, 3, "SRLI" );END IF;
         IF (cycle = 16) THEN check_register( 12, 3, "XORI" );END IF;
         IF (cycle = 17) THEN check_register(  1, 3, "XOR"  );END IF;
-        IF (cycle = 18) THEN check_register(  1, 3, "SLTI" );END IF;
+        IF (cycle = 18) THEN check_register(  1, 3, "SLTI first" );END IF;
         IF (cycle = 19) THEN check_register(  0, 3, "SLTIU");END IF;
-        IF (cycle = 20) THEN check_register(  0, 3, "SLTI" );END IF;
+        IF (cycle = 20) THEN check_register(  0, 3, "SLTI second" );END IF;
         IF (cycle = 21) THEN check_register(  1, 3, "SLTIU");END IF;
         IF (cycle = 28) THEN check_register(  1, 3, "SLT"  );END IF;
         IF (cycle = 29) THEN check_register(  1, 3, "SLTU" );END IF;

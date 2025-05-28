@@ -30,9 +30,7 @@ end entity;
 
 
 architecture structure of register_file is
-    signal s_registers : registermemory := (1 => std_logic_vector(to_unsigned(9,word_width)),
-                                            2 => std_logic_vector(to_unsigned(8,word_width)),
-                                          others => (others => '0')); -- already conforms to the reg_amount required
+    signal s_registers : registermemory := (others => (others => '0')); -- already conforms to the reg_amount required
     
     signal s_read1,s_read2 : std_logic_vector (word_width-1 downto 0) := (others => '0');
     begin
