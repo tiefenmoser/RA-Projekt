@@ -24,14 +24,14 @@ entity signExtension is
         G_word_width : integer := WORD_WIDTH
     );
     port(
-        pi_instr : in std_logic_vector(G_word_width-1 downto 0);
+        pi_instr : in std_logic_vector(G_word_width-1 downto 0) := (others => '0');
 
         -- i hate it here
-        po_storeImm : out std_logic_vector(G_word_width-1 downto 0);
-        po_immediateImm : out std_logic_vector(G_word_width-1 downto 0);
-        po_unsignedImm  : out std_logic_vector(G_word_width-1 downto 0);
-        po_branchImm : out std_logic_vector(G_word_width-1 downto 0);
-        po_jumpImm : out std_logic_vector(G_word_width-1 downto 0)
+        po_storeImm : out std_logic_vector(G_word_width-1 downto 0):= (others => '0');
+        po_immediateImm : out std_logic_vector(G_word_width-1 downto 0):= (others => '0');
+        po_unsignedImm  : out std_logic_vector(G_word_width-1 downto 0):= (others => '0');
+        po_branchImm : out std_logic_vector(G_word_width-1 downto 0):= (others => '0');
+        po_jumpImm : out std_logic_vector(G_word_width-1 downto 0):= (others => '0')
     );
 end entity;
 

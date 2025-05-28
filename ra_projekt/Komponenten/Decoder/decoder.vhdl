@@ -57,7 +57,7 @@ architecture arc of decoder is
                         po_controlWord.I_IMM_SEL <= '1';
                         po_controlWord.ALU_OP <= v_shift_I_4th_bit & v_func3;
                     when others => 
-                        po_controlWord <= control_word_init;
+                        po_controlWord <= control_word_init; 
                  end case;
         end process;    
     -- end solution!!

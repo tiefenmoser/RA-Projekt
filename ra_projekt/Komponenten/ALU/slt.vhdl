@@ -8,9 +8,9 @@ entity slt is
         G_data_width : integer := DATA_WIDTH_GEN
     );
     port(
-        pi_val1 , pi_val2: in std_logic_vector(G_data_width-1 downto 0);
+        pi_val1 , pi_val2: in std_logic_vector(G_data_width-1 downto 0) := (others => '0');
 
-        po_value : out std_logic_vector(G_data_width-1 downto 0)
+        po_value : out std_logic_vector(G_data_width-1 downto 0) := (others => '0')
     );
 end slt;
 
