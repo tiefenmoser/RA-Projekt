@@ -41,4 +41,5 @@ ghdl -a --std=08 RISCV/RI_only_RISC_V.vhdl
 
 ghdl -a --std=08 Testbenches/RISCV/ri_only_RISC_V_tb.vhdl
 ghdl -e --std=08 ri_only_RISC_V_tb
-ghdl -r --std=08 ri_only_RISC_V_tb --wave=ri_riscv.ghw
+ghdl -r --std=08 ri_only_RISC_V_tb --vcd=ri_riscv.vcd
+#--wave=ri_riscv.ghw

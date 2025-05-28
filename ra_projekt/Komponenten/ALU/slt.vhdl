@@ -1,3 +1,6 @@
+-- 1. Participant First and Last Name: Cornelius Tiefenmoser
+-- 2. Participant First and Last Name: Maxi Gromut
+-- 3. Participant First and Last Name: Rupert Honold
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;

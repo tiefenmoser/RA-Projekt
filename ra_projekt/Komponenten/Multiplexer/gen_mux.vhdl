@@ -12,10 +12,10 @@ entity gen_mux is
         G_DATA_WIDTH: integer := DATA_WIDTH_GEN
     );
     port(
-        pi_first,pi_second: in std_logic_vector(G_DATA_WIDTH-1 downto 0);
-        pi_sel: in std_logic;
+        pi_first,pi_second: in std_logic_vector(G_DATA_WIDTH-1 downto 0) := (others => '0');
+        pi_sel: in std_logic := '0';
 
-        po_result: out std_logic_vector(G_DATA_WIDTH-1 downto 0)
+        po_result: out std_logic_vector(G_DATA_WIDTH-1 downto 0) := (others => '0')
     );
 end gen_mux;
 

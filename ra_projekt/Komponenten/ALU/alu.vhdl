@@ -1,5 +1,6 @@
 -- 1. Partner: Cornelius Tiefenmoser
 -- 2. Partner: Maxi Gromut
+-- 3. Partner: Rupert Honold
 -- Teile der Logik hauptsächlich die Shifter logik von Leonard Habrom
 
 library ieee;

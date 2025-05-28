@@ -1,7 +1,7 @@
 -- Laboratory RA solutions/versuch5
 -- Sommersemester 25
 -- Group Details
--- Lab Date:
+-- Lab Date: 28.05.2025
 -- 1. Participant First and Last Name: Cornelius Tiefenmoser 
 -- 2. Participant First and Last Name: Maxi Gromut
 -- 3. Participant First and Last Name: Rupert Honold
