@@ -1,3 +1,11 @@
+-- Laboratory RA solutions/versuch6
+-- Sommersemester 25
+-- Group Details
+-- Lab Date: 4.5.25
+-- 1. Participant First and Last Name: Cornelius Tiefenmoser
+-- 2. Participant First and Last Name: Maxi Gromut
+-- 3. Participant First and Last Name: Rupert Honold
+
 -- ========================================================================
 -- Author:       Marcel Rieß
 -- Last updated: 02.05.2025
@@ -14,6 +22,9 @@ package types is
     ALU_OP       : std_logic_vector(ALU_OPCODE_WIDTH - 1 downto 0); -- determines the ALU's operation
     I_IMM_SEL    : std_logic;                                       -- used as a MUX selector for i-Format Immediates
     REG_WRITE    : std_logic;
+    A_SEL        : std_logic; -- used as a MUX selector for ALU
+    PC_SEL        : std_logic; -- used as a MUX selector for PC
+    WB_SEL       :std_logic_vector( 1 downto 0);
   end record controlWord;
 
   -- allows initialization of control words, used in decoder
@@ -21,7 +32,10 @@ package types is
   (
   ALU_OP => (others => '0'),
   I_IMM_SEL  => '0',
-  REG_WRITE   => '0'
+  REG_WRITE   => '0',
+  A_SEL   => '0',
+  PC_SEL   => '0',
+  WB_SEL   => "00"
   );
 
   -- enum containig all instruction formats, used in decoder

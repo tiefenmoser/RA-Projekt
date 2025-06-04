@@ -36,17 +36,25 @@ architecture arc of decoder is
                 v_func3 := pi_instruction(14 downto 12);
                 v_func7 := pi_instruction(31 downto 25);
                 v_opcode := pi_instruction(6 downto 0);
+
+
+                po_controlWord <= control_word_init;
                 case v_opcode is
                     when R_INS_OP =>
                         v_insFormat := rFormat;
                     when I_INS_OP =>
                         v_insFormat := iFormat;
+                    when LUI_INS_OP =>
+                        v_insFormat := uFormat;
+                    when AUIPC_INS_OP =>
+                        v_insFormat := uFormat;
+                    when JAL_INS_OP =>
+                        v_insFormat := jFormat;    
                     when others =>
                         v_insFormat := nullFormat;
                 end case;
 
                 
-                po_controlWord <= control_word_init;
                 v_shift_I_4th_bit := v_func7(5) when v_func3 = SRA_ALU_OP(2 downto 0);
                 case v_insFormat is
                     when rFormat => 
@@ -54,10 +62,23 @@ architecture arc of decoder is
                         po_controlWord.ALU_OP <= v_func7(5) & v_func3;
                     when iFormat =>
                         po_controlWord.REG_WRITE <= '1';
+                        po_controlWord.WB_SEL <= "01";
                         po_controlWord.I_IMM_SEL <= '1';
                         po_controlWord.ALU_OP <= v_shift_I_4th_bit & v_func3;
+                    when uFormat =>
+                        po_controlWord.I_IMM_SEL <= '1';
+                        po_controlWord.REG_WRITE <= '1';
+                        po_controlWord.WB_SEL <= "01"  when v_opcode=LUI_INS_OP;
+                        po_controlWord.ALU_OP <= ADD_ALU_OP when v_opcode=AUIPC_INS_OP; -- this is only here for readablity should already be 0 anyway
+                        po_controlWord.A_SEL <= '1' when v_opcode=AUIPC_INS_OP; 
+                    when jFormat =>
+                        po_controlWord.I_IMM_SEL <= '1';
+                        po_controlWord.REG_WRITE <= '1';
+                        po_controlWord.WB_SEL <= "10";
+                        po_controlWord.A_SEL <= '1';
+                        po_controlWord.PC_SEL <= '1';
                     when others => 
-                        po_controlWord <= control_word_init; 
+                        po_controlWord <= control_word_init; -- doppelt hält besser oder so
                  end case;
         end process;    
     -- end solution!!
