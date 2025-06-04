@@ -50,6 +50,8 @@ architecture arc of decoder is
                         v_insFormat := uFormat;
                     when JAL_INS_OP =>
                         v_insFormat := jFormat;    
+                    when JALR_INS_OP =>
+                        v_insFormat := iFormat;    
                     when others =>
                         v_insFormat := nullFormat;
                 end case;
@@ -62,13 +64,20 @@ architecture arc of decoder is
                         po_controlWord.ALU_OP <= v_func7(5) & v_func3;
                     when iFormat =>
                         po_controlWord.REG_WRITE <= '1';
-                        po_controlWord.WB_SEL <= "01";
                         po_controlWord.I_IMM_SEL <= '1';
-                        po_controlWord.ALU_OP <= v_shift_I_4th_bit & v_func3;
+                        if v_opcode = JALR_INS_OP then 
+                            po_controlWord.ALU_OP <= ADD_ALU_OP;
+                            po_controlWord.PC_SEL <= '1';
+                            po_controlWord.WB_SEL <= "10";
+
+                        else
+                            po_controlWord.ALU_OP <= v_shift_I_4th_bit & v_func3;
+                            po_controlWord.WB_SEL <= "01";
+                        end if;
                     when uFormat =>
                         po_controlWord.I_IMM_SEL <= '1';
                         po_controlWord.REG_WRITE <= '1';
-                        po_controlWord.WB_SEL <= "01"  when v_opcode=LUI_INS_OP;
+                        po_controlWord.WB_SEL <= "01"  when v_opcode=LUI_INS_OP ;
                         po_controlWord.ALU_OP <= ADD_ALU_OP when v_opcode=AUIPC_INS_OP; -- this is only here for readablity should already be 0 anyway
                         po_controlWord.A_SEL <= '1' when v_opcode=AUIPC_INS_OP; 
                     when jFormat =>

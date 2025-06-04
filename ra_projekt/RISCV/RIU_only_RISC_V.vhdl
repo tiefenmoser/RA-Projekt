@@ -194,6 +194,7 @@ begin
     -- not sure if its works ngl?????
     with s_if_instruction(6 downto 0) select
         s_out_signextended <= s_out_I_signextended when I_INS_OP,
+                              s_out_I_signextended when JALR_INS_OP,
                               s_out_U_signextended when LUI_INS_OP,
                               s_out_U_signextended when AUIPC_INS_OP,
                               s_out_J_signextended when JAL_INS_OP,
