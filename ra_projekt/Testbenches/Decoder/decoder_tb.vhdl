@@ -2,6 +2,7 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 use work.constant_package.all;
+USE work.util_asm_package.ALL;
 use work.types.all;
 
 
@@ -31,78 +32,45 @@ begin
     variable v_rs1 : integer := 5;
     variable v_rs2 : integer := 4;
     variable v_rd  : integer := 6;
-    variable v_shamt: integer :=12;
     variable v_expectedcontrolword : controlWord := CONTROL_WORD_INIT;
-    variable func7 : std_logic_vector(6 downto 0)              := "0" & ADD_ALU_OP (ALU_OPCODE_WIDTH - 1) & "00000";
     variable func3 : std_logic_vector(2 downto 0)              := ADD_ALU_OP(ALU_OPCODE_WIDTH - 2 downto 0);
 
   begin
 
     -- R-Format Decoding
-  
-    func7 := "0" & ADD_ALU_OP (ALU_OPCODE_WIDTH - 1) & "00000";
-    func3 := ADD_ALU_OP(ALU_OPCODE_WIDTH - 2 downto 0);
-    s_instruction <= func7 & std_logic_vector(to_unsigned(v_rs2, REG_ADR_WIDTH)) & std_logic_vector(to_unsigned(v_rs1, REG_ADR_WIDTH)) & func3 & std_logic_vector(to_unsigned(v_rd, REG_ADR_WIDTH)) & R_INS_OP;
-    s_clk <= '1'; wait for PERIOD / 2; s_clk <= '0'; wait for PERIOD / 2;
     v_expectedControlWord := CONTROL_WORD_INIT;
     v_expectedControlWord.I_IMM_SEL := '0';
     v_expectedControlWord.ALU_OP := ADD_ALU_OP;
     v_expectedControlWord.REG_WRITE := '1';
+    s_instruction <= Asm2Std("ADD",v_rd,v_rs1,v_rs2);wait for PERIOD / 2;
     assert (s_controlword = v_expectedcontrolword) report "Error in R-Format decoding"  severity error;
-
+    
   
-    func7 := "0" & SUB_ALU_OP (ALU_OPCODE_WIDTH - 1) & "00000";
-    func3 := SUB_ALU_OP(ALU_OPCODE_WIDTH - 2 downto 0);
-    s_instruction <= func7 & std_logic_vector(to_unsigned(v_rs2, REG_ADR_WIDTH)) & std_logic_vector(to_unsigned(v_rs1, REG_ADR_WIDTH)) & func3 & std_logic_vector(to_unsigned(v_rd, REG_ADR_WIDTH)) & R_INS_OP; 
-    s_clk <= '1'; wait for PERIOD / 2; s_clk <= '0'; wait for PERIOD / 2;
-     v_expectedControlWord := CONTROL_WORD_INIT;
-     v_expectedControlWord.I_IMM_SEL := '0';
     v_expectedControlWord.ALU_OP := SUB_ALU_OP;
-    v_expectedControlWord.REG_WRITE := '1';
+    s_instruction <=Asm2Std("SUB",v_rd,v_rs1,v_rs2);wait for PERIOD / 2;
     assert (s_controlword = v_expectedcontrolword)
     report "Error in R-Format decoding"  severity error;
 
-  
-    func7 := "0" & SRA_ALU_OP (ALU_OPCODE_WIDTH - 1) & "00000";
-    func3 := SRA_ALU_OP(ALU_OPCODE_WIDTH - 2 downto 0);
-    s_instruction <= func7 & std_logic_vector(to_unsigned(v_rs2, REG_ADR_WIDTH)) & std_logic_vector(to_unsigned(v_rs1, REG_ADR_WIDTH)) & func3 & std_logic_vector(to_unsigned(v_rd, REG_ADR_WIDTH)) & R_INS_OP; 
-    s_clk <= '1'; wait for PERIOD / 2; s_clk <= '0'; wait for PERIOD / 2;
-     v_expectedControlWord := CONTROL_WORD_INIT;
-     v_expectedControlWord.I_IMM_SEL := '0';
+
     v_expectedControlWord.ALU_OP := SRA_ALU_OP;
-    v_expectedControlWord.REG_WRITE := '1';
+    s_instruction <=Asm2Std("SRA",v_rd,v_rs1,v_rs2);wait for PERIOD / 2;
     assert (s_controlword = v_expectedcontrolword) report "Error in R-Format decoding"  severity error;
 
 
-      
-    func7 := "0" & SRL_ALU_OP (ALU_OPCODE_WIDTH - 1) & "00000";
-    func3 := SRL_ALU_OP(ALU_OPCODE_WIDTH - 2 downto 0);
-    s_instruction <= func7 & std_logic_vector(to_unsigned(v_rs2, REG_ADR_WIDTH)) & std_logic_vector(to_unsigned(v_rs1, REG_ADR_WIDTH)) & func3 & std_logic_vector(to_unsigned(v_rd, REG_ADR_WIDTH)) & R_INS_OP; 
-    s_clk <= '1'; wait for PERIOD / 2; s_clk <= '0'; wait for PERIOD / 2;
-     v_expectedControlWord := CONTROL_WORD_INIT;
-     v_expectedControlWord.I_IMM_SEL := '0';
     v_expectedControlWord.ALU_OP := SRL_ALU_OP;
-    v_expectedControlWord.REG_WRITE := '1';
+    s_instruction <= Asm2Std("SRL",v_rd,v_rs1,v_rs2);wait for PERIOD / 2;
     assert (s_controlword = v_expectedcontrolword) report "Error in R-Format decoding"  severity error;
 
 
   
-    func7 := "0" & SLL_ALU_OP (ALU_OPCODE_WIDTH - 1) & "00000";
-    func3 := SLL_ALU_OP(ALU_OPCODE_WIDTH - 2 downto 0);
-    s_instruction <= func7 & std_logic_vector(to_unsigned(v_rs2, REG_ADR_WIDTH)) & std_logic_vector(to_unsigned(v_rs1, REG_ADR_WIDTH)) & func3 & std_logic_vector(to_unsigned(v_rd, REG_ADR_WIDTH)) & R_INS_OP; 
-    s_clk <= '1'; wait for PERIOD / 2; s_clk <= '0'; wait for PERIOD / 2;
-     v_expectedControlWord := CONTROL_WORD_INIT;
-     v_expectedControlWord.I_IMM_SEL := '0';
+    s_instruction <=Asm2Std("SLL",v_rd,v_rs1,v_rs2);wait for PERIOD / 2;
+    v_expectedControlWord := CONTROL_WORD_INIT;
+    v_expectedControlWord.I_IMM_SEL := '0';
     v_expectedControlWord.ALU_OP := SLL_ALU_OP;
     v_expectedControlWord.REG_WRITE := '1';
     assert (s_controlword = v_expectedcontrolword)    report "Error in R-Format decoding"  severity error;
 
-
-      
-    func7 := "0" & OR_ALU_OP (ALU_OPCODE_WIDTH - 1) & "00000";
-    func3 := OR_ALU_OP(ALU_OPCODE_WIDTH - 2 downto 0);
-    s_instruction <= func7 & std_logic_vector(to_unsigned(v_rs2, REG_ADR_WIDTH)) & std_logic_vector(to_unsigned(v_rs1, REG_ADR_WIDTH)) & func3 & std_logic_vector(to_unsigned(v_rd, REG_ADR_WIDTH)) & R_INS_OP; 
-    s_clk <= '1'; wait for PERIOD / 2; s_clk <= '0'; wait for PERIOD / 2;
+    s_instruction <=Asm2Std("OR",v_rd,v_rs1,v_rs2);wait for PERIOD / 2;
      v_expectedControlWord := CONTROL_WORD_INIT;
      v_expectedControlWord.I_IMM_SEL := '0';
     v_expectedControlWord.ALU_OP := OR_ALU_OP;
@@ -111,10 +79,7 @@ begin
 
 
       
-    func7 := "0" & XOR_ALU_OP (ALU_OPCODE_WIDTH - 1) & "00000";
-    func3 := XOR_ALU_OP(ALU_OPCODE_WIDTH - 2 downto 0);
-    s_instruction <= func7 & std_logic_vector(to_unsigned(v_rs2, REG_ADR_WIDTH)) & std_logic_vector(to_unsigned(v_rs1, REG_ADR_WIDTH)) & func3 & std_logic_vector(to_unsigned(v_rd, REG_ADR_WIDTH)) & R_INS_OP; 
-    s_clk <= '1'; wait for PERIOD / 2; s_clk <= '0'; wait for PERIOD / 2;
+    s_instruction <= Asm2Std("XOR",v_rd,v_rs1,v_rs2);wait for PERIOD / 2;
      v_expectedControlWord := CONTROL_WORD_INIT;
      v_expectedControlWord.I_IMM_SEL := '0';
     v_expectedControlWord.ALU_OP := XOR_ALU_OP;
@@ -123,20 +88,14 @@ begin
 
 
       
-    func7 := "0" & AND_ALU_OP (ALU_OPCODE_WIDTH - 1) & "00000";
-    func3 := AND_ALU_OP(ALU_OPCODE_WIDTH - 2 downto 0);
-    s_instruction <= func7 & std_logic_vector(to_unsigned(v_rs2, REG_ADR_WIDTH)) & std_logic_vector(to_unsigned(v_rs1, REG_ADR_WIDTH)) & func3 & std_logic_vector(to_unsigned(v_rd, REG_ADR_WIDTH)) & R_INS_OP; 
-    s_clk <= '1'; wait for PERIOD / 2; s_clk <= '0'; wait for PERIOD / 2;
+    s_instruction <=Asm2Std("AND",v_rd,v_rs1,v_rs2);wait for PERIOD / 2;
      v_expectedControlWord := CONTROL_WORD_INIT;
      v_expectedControlWord.I_IMM_SEL := '0';
     v_expectedControlWord.ALU_OP := AND_ALU_OP;
     v_expectedControlWord.REG_WRITE := '1';
     assert (s_controlword = v_expectedcontrolword)    report "Error in R-Format decoding"  severity error;
 
-    func7 := "0" & SLTU_ALU_OP (ALU_OPCODE_WIDTH - 1) & "00000";
-    func3 := SLTU_ALU_OP(ALU_OPCODE_WIDTH - 2 downto 0);
-    s_instruction <= func7 & std_logic_vector(to_unsigned(v_rs2, REG_ADR_WIDTH)) & std_logic_vector(to_unsigned(v_rs1, REG_ADR_WIDTH)) & func3 & std_logic_vector(to_unsigned(v_rd, REG_ADR_WIDTH)) & R_INS_OP; 
-    s_clk <= '1'; wait for PERIOD / 2; s_clk <= '0'; wait for PERIOD / 2;
+    s_instruction <=Asm2Std("SLTU",v_rd,v_rs1,v_rs2);wait for PERIOD / 2;
      v_expectedControlWord := CONTROL_WORD_INIT;
      v_expectedControlWord.I_IMM_SEL := '0';
     v_expectedControlWord.ALU_OP := SLTU_ALU_OP;
@@ -144,10 +103,7 @@ begin
     assert (s_controlword = v_expectedcontrolword)    report "Error in R-Format decoding"  severity error;
 
   
-    func7 := "0" & SLT_ALU_OP (ALU_OPCODE_WIDTH - 1) & "00000";
-    func3 := SLT_ALU_OP(ALU_OPCODE_WIDTH - 2 downto 0);
-    s_instruction <= func7 & std_logic_vector(to_unsigned(v_rs2, REG_ADR_WIDTH)) & std_logic_vector(to_unsigned(v_rs1, REG_ADR_WIDTH)) & func3 & std_logic_vector(to_unsigned(v_rd, REG_ADR_WIDTH)) & R_INS_OP; 
-    s_clk <= '1'; wait for PERIOD / 2; s_clk <= '0'; wait for PERIOD / 2;
+    s_instruction <= Asm2Std("SLT",v_rd,v_rs1,v_rs2);wait for PERIOD / 2;
      v_expectedControlWord := CONTROL_WORD_INIT;
      v_expectedControlWord.I_IMM_SEL := '0';
     v_expectedControlWord.ALU_OP := SLT_ALU_OP;
@@ -157,108 +113,52 @@ begin
 
 --  I-Format Decoding
   
-    func3 := ADD_ALU_OP(ALU_OPCODE_WIDTH - 2 downto 0);
-    s_instruction <= std_logic_vector(to_signed(9, 12))  & std_logic_vector(to_unsigned(v_rs1, REG_ADR_WIDTH)) & func3 & std_logic_vector(to_unsigned(v_rd, REG_ADR_WIDTH)) & I_INS_OP;
-    s_clk <= '1'; wait for PERIOD / 2; s_clk <= '0'; wait for PERIOD / 2;
+    s_instruction <=Asm2Std("ADDI",v_rd,v_rs1,v_rs2);wait for PERIOD / 2;
      v_expectedControlWord := CONTROL_WORD_INIT;
      v_expectedControlWord.I_IMM_SEL := '1';
     v_expectedControlWord.ALU_OP := ADD_ALU_OP;
     v_expectedControlWord.REG_WRITE := '1';
     assert (s_controlword = v_expectedcontrolword) report "Error in I-Format decoding"  severity error;
 
-  
-    func7 := "0" & SRA_ALU_OP (ALU_OPCODE_WIDTH - 1) & "00000";
-    func3 := SRA_ALU_OP(ALU_OPCODE_WIDTH - 2 downto 0);
-    s_instruction <= func7 & std_logic_vector(to_unsigned(v_shamt, REG_ADR_WIDTH)) & std_logic_vector(to_unsigned(v_rs1, REG_ADR_WIDTH)) & func3 & std_logic_vector(to_unsigned(v_rd, REG_ADR_WIDTH)) & I_INS_OP; 
-    s_clk <= '1'; wait for PERIOD / 2; s_clk <= '0'; wait for PERIOD / 2;
-     v_expectedControlWord := CONTROL_WORD_INIT;
-     v_expectedControlWord.I_IMM_SEL := '1';
-    v_expectedControlWord.ALU_OP := SRA_ALU_OP;
-    v_expectedControlWord.REG_WRITE := '1';
-    assert (s_controlword.ALU_OP = v_expectedcontrolword.ALU_OP) report "Error in I-Format decoding"  severity error;
 
-  func7 := "0" & SRL_ALU_OP (ALU_OPCODE_WIDTH - 1) & "00000";
-    func3 := SRL_ALU_OP(ALU_OPCODE_WIDTH - 2 downto 0);
-    s_instruction <= func7 & std_logic_vector(to_unsigned(v_shamt, REG_ADR_WIDTH))   & std_logic_vector(to_unsigned(v_rs1, REG_ADR_WIDTH)) & func3 & std_logic_vector(to_unsigned(v_rd, REG_ADR_WIDTH)) & I_INS_OP; 
-    s_clk <= '1'; wait for PERIOD / 2; s_clk <= '0'; wait for PERIOD / 2;
-     v_expectedControlWord := CONTROL_WORD_INIT;
-     v_expectedControlWord.I_IMM_SEL := '1';
-    v_expectedControlWord.ALU_OP := SRL_ALU_OP;
-    v_expectedControlWord.REG_WRITE := '1';
-    assert (s_controlword = v_expectedcontrolword) report "Error in I-Format decoding"  severity error;
-
-func7 := "0" & SLL_ALU_OP (ALU_OPCODE_WIDTH - 1) & "00000";
-    func3 := SLL_ALU_OP(ALU_OPCODE_WIDTH - 2 downto 0);
-    s_instruction <= func7 & std_logic_vector(to_unsigned(v_shamt, REG_ADR_WIDTH))  & std_logic_vector(to_unsigned(v_rs1, REG_ADR_WIDTH)) & func3 & std_logic_vector(to_unsigned(v_rd, REG_ADR_WIDTH)) & I_INS_OP; 
-    s_clk <= '1'; wait for PERIOD / 2; s_clk <= '0'; wait for PERIOD / 2;
-    v_expectedControlWord := CONTROL_WORD_INIT;
-     v_expectedControlWord.I_IMM_SEL := '1';
-    v_expectedControlWord.ALU_OP := SLL_ALU_OP;
-    v_expectedControlWord.REG_WRITE := '1';
-    assert (s_controlword = v_expectedcontrolword)    report "Error in I-Format decoding"  severity error;
-
-    func3 := OR_ALU_OP(ALU_OPCODE_WIDTH - 2 downto 0);
-    s_instruction <= std_logic_vector(to_signed(9, 12))  & std_logic_vector(to_unsigned(v_rs1, REG_ADR_WIDTH)) & func3 & std_logic_vector(to_unsigned(v_rd, REG_ADR_WIDTH)) & I_INS_OP; 
-    s_clk <= '1'; wait for PERIOD / 2; s_clk <= '0'; wait for PERIOD / 2;
+    s_instruction <=Asm2Std("ORI",v_rd,v_rs1,v_rs2);wait for PERIOD / 2;
      v_expectedControlWord := CONTROL_WORD_INIT;
      v_expectedControlWord.I_IMM_SEL := '1';
     v_expectedControlWord.ALU_OP := OR_ALU_OP;
     v_expectedControlWord.REG_WRITE := '1';
     assert (s_controlword = v_expectedcontrolword)    report "Error in I-Format decoding"  severity error;
 
-    func3 := XOR_ALU_OP(ALU_OPCODE_WIDTH - 2 downto 0);
-    s_instruction <= std_logic_vector(to_signed(9, 12))  & std_logic_vector(to_unsigned(v_rs1, REG_ADR_WIDTH)) & func3 & std_logic_vector(to_unsigned(v_rd, REG_ADR_WIDTH)) & I_INS_OP; 
-    s_clk <= '1'; wait for PERIOD / 2; s_clk <= '0'; wait for PERIOD / 2;
+    s_instruction <=Asm2Std("XORI",v_rd,v_rs1,v_rs2);wait for PERIOD / 2;
     v_expectedControlWord := CONTROL_WORD_INIT;
      v_expectedControlWord.I_IMM_SEL := '1';
     v_expectedControlWord.ALU_OP := XOR_ALU_OP;
     v_expectedControlWord.REG_WRITE := '1';
     assert (s_controlword = v_expectedcontrolword)    report "Error in I-Format decoding"  severity error;
 
-    func3 := AND_ALU_OP(ALU_OPCODE_WIDTH - 2 downto 0);
-    s_instruction <= std_logic_vector(to_signed(9, 12))  & std_logic_vector(to_unsigned(v_rs1, REG_ADR_WIDTH)) & func3 & std_logic_vector(to_unsigned(v_rd, REG_ADR_WIDTH)) & I_INS_OP; 
-    s_clk <= '1'; wait for PERIOD / 2; s_clk <= '0'; wait for PERIOD / 2;
+    s_instruction <=Asm2Std("ANDI",v_rd,v_rs1,v_rs2);wait for PERIOD / 2;
     v_expectedControlWord := CONTROL_WORD_INIT;
      v_expectedControlWord.I_IMM_SEL := '1';
     v_expectedControlWord.ALU_OP := AND_ALU_OP;
     v_expectedControlWord.REG_WRITE := '1';
     assert (s_controlword = v_expectedcontrolword)    report "Error in I-Format decoding"  severity error;
 
-    func3 := SLTU_ALU_OP(ALU_OPCODE_WIDTH - 2 downto 0);
-    s_instruction <= std_logic_vector(to_signed(9, 12))  & std_logic_vector(to_unsigned(v_rs1, REG_ADR_WIDTH)) & func3 & std_logic_vector(to_unsigned(v_rd, REG_ADR_WIDTH)) & I_INS_OP; 
-    s_clk <= '1'; wait for PERIOD / 2; s_clk <= '0'; wait for PERIOD / 2;
-     v_expectedControlWord := CONTROL_WORD_INIT;
-     v_expectedControlWord.I_IMM_SEL := '1';
-    v_expectedControlWord.ALU_OP := SLTU_ALU_OP;
-    v_expectedControlWord.REG_WRITE := '1';
-    assert (s_controlword = v_expectedcontrolword)    report "Error in I-Format decoding"  severity error;
-
-  
-    func3 := SLT_ALU_OP(ALU_OPCODE_WIDTH - 2 downto 0);
-    s_instruction <= std_logic_vector(to_signed(9, 12))  & std_logic_vector(to_unsigned(v_rs1, REG_ADR_WIDTH)) & func3 & std_logic_vector(to_unsigned(v_rd, REG_ADR_WIDTH)) & I_INS_OP; 
-    s_clk <= '1'; wait for PERIOD / 2; s_clk <= '0'; wait for PERIOD / 2;
-     v_expectedControlWord := CONTROL_WORD_INIT;
-     v_expectedControlWord.I_IMM_SEL := '1';
-    v_expectedControlWord.ALU_OP := SLT_ALU_OP;
-    v_expectedControlWord.REG_WRITE := '1';
-    assert (s_controlword = v_expectedcontrolword)    report "Error in I-Format decoding"  severity error;
-
+    
     func3 := ADD_ALU_OP(ALU_OPCODE_WIDTH - 2 downto 0);
-    s_instruction <= std_logic_vector(to_signed(9, 12))  & std_logic_vector(to_unsigned(v_rs1, REG_ADR_WIDTH)) & func3 & std_logic_vector(to_unsigned(v_rd, REG_ADR_WIDTH)) & JALR_INS_OP;
-    s_clk <= '1'; wait for PERIOD / 2; s_clk <= '0'; wait for PERIOD / 2;
+    s_instruction <=Asm2Std("JALR",v_rd,v_rs1,v_rs2);-- std_logic_vector(to_signed(9, 12))  & std_logic_vector(to_unsigned(v_rs1, REG_ADR_WIDTH)) & func3 & std_logic_vector(to_unsigned(v_rd, REG_ADR_WIDTH)) & JALR_INS_OP;
+    wait for PERIOD / 2;
+    v_expectedControlWord := CONTROL_WORD_INIT;
     v_expectedControlWord.I_IMM_SEL := '1';
     v_expectedControlWord.WB_SEL:= "10";
     v_expectedControlWord.ALU_OP := ADD_ALU_OP;
     v_expectedControlWord.PC_SEL:= '1';
-    v_expectedControlWord.A_SEL:= '0';
     v_expectedControlWord.REG_WRITE := '1';
     assert (s_controlword = v_expectedcontrolword) report "Error in JALR-Format decoding"  severity error;
 
 
     --  U-Format Decoding
 
-    s_instruction <= std_logic_vector(to_signed(9, 20)) & std_logic_vector(to_unsigned(v_rd, REG_ADR_WIDTH)) & LUI_INS_OP; 
-    s_clk <= '1'; wait for PERIOD / 2; s_clk <= '0'; wait for PERIOD / 2;
+    s_instruction <=Asm2Std("LUI",v_rd,v_rs1,v_rs2);-- std_logic_vector(to_signed(9, 20)) & std_logic_vector(to_unsigned(v_rd, REG_ADR_WIDTH)) & LUI_INS_OP; 
+    wait for PERIOD / 2;
      v_expectedControlWord := CONTROL_WORD_INIT;
      v_expectedControlWord.I_IMM_SEL := '1';
     v_expectedControlWord.WB_SEL:= "01";
@@ -266,8 +166,8 @@ func7 := "0" & SLL_ALU_OP (ALU_OPCODE_WIDTH - 1) & "00000";
     v_expectedControlWord.REG_WRITE := '1';
     assert (s_controlword = v_expectedcontrolword)    report "Error in LUI-Format decoding"  severity error;
 
-    s_instruction <= std_logic_vector(to_signed(9, 20)) & std_logic_vector(to_unsigned(v_rd, REG_ADR_WIDTH)) & AUIPC_INS_OP; 
-    s_clk <= '1'; wait for PERIOD / 2; s_clk <= '0'; wait for PERIOD / 2;
+    s_instruction <=Asm2Std("AUIPC",v_rd,v_rs1,v_rs2);-- std_logic_vector(to_signed(9, 20)) & std_logic_vector(to_unsigned(v_rd, REG_ADR_WIDTH)) & AUIPC_INS_OP; 
+    wait for PERIOD / 2;
     v_expectedControlWord := CONTROL_WORD_INIT;
      v_expectedControlWord.I_IMM_SEL := '1';
     v_expectedControlWord.A_SEL:= '1';
@@ -277,8 +177,8 @@ func7 := "0" & SLL_ALU_OP (ALU_OPCODE_WIDTH - 1) & "00000";
     
     
     
-    s_instruction <= std_logic_vector(to_signed(9, 20)) & std_logic_vector(to_unsigned(v_rd, REG_ADR_WIDTH)) & JAL_INS_OP; 
-    s_clk <= '1'; wait for PERIOD / 2; s_clk <= '0'; wait for PERIOD / 2;
+    s_instruction <=Asm2Std("JAL",v_rd,v_rs1,v_rs2);-- std_logic_vector(to_signed(9, 20)) & std_logic_vector(to_unsigned(v_rd, REG_ADR_WIDTH)) & JAL_INS_OP; 
+    wait for PERIOD / 2;
     v_expectedControlWord := CONTROL_WORD_INIT;
     v_expectedControlWord.I_IMM_SEL := '1';
     v_expectedControlWord.WB_SEL:= "10";
@@ -288,7 +188,55 @@ func7 := "0" & SLL_ALU_OP (ALU_OPCODE_WIDTH - 1) & "00000";
     v_expectedControlWord.REG_WRITE := '1';
     assert (s_controlword = v_expectedcontrolword)    report "Error in JAL-Format decoding"  severity error;
     
-    
+    -- BRANCH-Format Decoding (BEQ, BNE, BLT, BGE, BLTU, BGEU)
+    -- BEQ
+    s_instruction <= Asm2Std("BEQ",v_rd,v_rs1,v_rs2); wait for PERIOD / 2;
+    v_expectedControlWord := CONTROL_WORD_INIT;
+    v_expectedControlWord.ALU_OP := SUB_ALU_OP;
+    v_expectedControlWord.IS_BRANCH := '1';
+    v_expectedControlWord.CMP_RESULT  := '0';
+    assert (s_controlword = v_expectedcontrolword) report "Error in BEQ decoding" severity error;
+
+    -- BNE
+    s_instruction <= Asm2Std("BNE",v_rd,v_rs1,v_rs2); wait for PERIOD / 2;
+    v_expectedControlWord := CONTROL_WORD_INIT;
+    v_expectedControlWord.ALU_OP := SUB_ALU_OP;
+    v_expectedControlWord.IS_BRANCH := '1';
+    v_expectedControlWord.CMP_RESULT  := '1';
+    assert (s_controlword = v_expectedcontrolword) report "Error in BNE decoding" severity error;
+
+    -- BLT
+    s_instruction <= Asm2Std("BLT",v_rd,v_rs1,v_rs2); wait for PERIOD / 2;
+    v_expectedControlWord := CONTROL_WORD_INIT;
+    v_expectedControlWord.ALU_OP := SLT_ALU_OP;
+    v_expectedControlWord.IS_BRANCH := '1';
+    v_expectedControlWord.CMP_RESULT  := '1';
+    assert (s_controlword = v_expectedcontrolword) report "Error in BLT decoding" severity error;
+
+    -- BGE
+    s_instruction <= Asm2Std("BGE",v_rd,v_rs1,v_rs2); wait for PERIOD / 2;
+    v_expectedControlWord := CONTROL_WORD_INIT;
+    v_expectedControlWord.ALU_OP := SLT_ALU_OP;
+    v_expectedControlWord.IS_BRANCH := '1';
+    v_expectedControlWord.CMP_RESULT  := '0';
+    assert (s_controlword = v_expectedcontrolword) report "Error in BGE decoding" severity error;
+
+    -- BLTU
+    s_instruction <= Asm2Std("BLTU",v_rd,v_rs1,v_rs2); wait for PERIOD / 2;
+    v_expectedControlWord := CONTROL_WORD_INIT;
+    v_expectedControlWord.ALU_OP := SLTU_ALU_OP;
+    v_expectedControlWord.IS_BRANCH := '1';
+    v_expectedControlWord.CMP_RESULT  := '1';
+    assert (s_controlword = v_expectedcontrolword) report "Error in BLTU decoding" severity error;
+
+    -- BGEU
+    s_instruction <= Asm2Std("BGEU",v_rd,v_rs1,v_rs2); wait for PERIOD / 2;
+    v_expectedControlWord := CONTROL_WORD_INIT;
+    v_expectedControlWord.ALU_OP := SLTU_ALU_OP;
+    v_expectedControlWord.IS_BRANCH := '1';
+    v_expectedControlWord.CMP_RESULT  := '0';
+    assert (s_controlword = v_expectedcontrolword) report "Error in BGEU decoding" severity error;
+
 
 
 

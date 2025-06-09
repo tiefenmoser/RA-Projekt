@@ -38,7 +38,6 @@ architecture arc of decoder is
                 v_opcode := pi_instruction(6 downto 0);
 
 
-                po_controlWord <= control_word_init;
                 case v_opcode is
                     when R_INS_OP =>
                         v_insFormat := rFormat;
@@ -51,12 +50,15 @@ architecture arc of decoder is
                     when JAL_INS_OP =>
                         v_insFormat := jFormat;    
                     when JALR_INS_OP =>
-                        v_insFormat := iFormat;    
+                        v_insFormat := iFormat;  
+                    when B_INS_OP =>
+                        v_insFormat := bFormat;
                     when others =>
                         v_insFormat := nullFormat;
                 end case;
 
                 
+                po_controlWord <= control_word_init;
                 v_shift_I_4th_bit := v_func7(5) when v_func3 = SRA_ALU_OP(2 downto 0);
                 case v_insFormat is
                     when rFormat => 
@@ -72,7 +74,7 @@ architecture arc of decoder is
 
                         else
                             po_controlWord.ALU_OP <= v_shift_I_4th_bit & v_func3;
-                            po_controlWord.WB_SEL <= "01";
+                            -- po_controlWord.WB_SEL <= "01"; -- i thought i neeeded this i guess not lmao
                         end if;
                     when uFormat =>
                         po_controlWord.I_IMM_SEL <= '1';
@@ -86,6 +88,17 @@ architecture arc of decoder is
                         po_controlWord.WB_SEL <= "10";
                         po_controlWord.A_SEL <= '1';
                         po_controlWord.PC_SEL <= '1';
+                    when bFormat =>
+                        po_controlWord.CMP_RESULT <= v_func3(0) when v_func3(2) = '0' else not v_func3(0) ;
+                        po_controlWord.IS_BRANCH <= '1';
+                        with v_func3 select 
+                            po_controlWord.ALU_OP <= SUB_ALU_OP when FUNC3_BEQ,
+                                                     SUB_ALU_OP when FUNC3_BNE,
+                                                     SLT_ALU_op when FUNC3_BLT,
+                                                     SLTU_ALU_op when FUNC3_BLTU,
+                                                     SLT_ALU_OP when FUNC3_BGE,-- invert the cmp result for this
+                                                     SLTU_ALU_op when FUNC3_BGEU, 
+                                                     (others => '0') when others;
                     when others => 
                         po_controlWord <= control_word_init; -- doppelt hält besser oder so
                  end case;

@@ -18,7 +18,7 @@ entity alu is
         pi_aluOp : in STD_LOGIC_VECTOR(G_OP_WIDTH -1 downto 0):= (others => '0');
         
         po_aluOut : out STD_LOGIC_VECTOR(G_DATA_WIDTH -1 downto 0) := (others => '0');
-        po_carryOut : out std_logic := '0'
+        po_carryOut,po_zero : out std_logic := '0'
     );
 end alu;   
 
@@ -53,6 +53,7 @@ architecture behavior of alu is
                          s_sltur when SLTU_ALU_OP,
 				 		 pi_op1 when others;
 
+        po_zero <= '1' when po_aluOut = STD_LOGIC_VECTOR(to_unsigned(0,G_DATA_WIDTH)) else '0'; -- does this work??
 
 		with pi_aluOp select
 				po_carryOut <= s_addc when ADD_ALU_OP,
