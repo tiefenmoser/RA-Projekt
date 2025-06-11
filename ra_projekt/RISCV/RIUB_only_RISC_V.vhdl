@@ -159,7 +159,7 @@ begin
         port map(
             pi_data => s_if_internal,
             pi_clk => s_clk,
-            pi_rst => s_rst,
+            pi_rst => s_rst or s_out_b_reg1 or s_out_cwr2.PC_SEL,
             po_data => s_if_instruction
         );
 
@@ -221,7 +221,7 @@ begin
         port map(
             pi_data => s_if_instruction(11 downto 7),
             pi_clk => s_clk,
-            pi_rst => s_rst,
+            pi_rst => s_rst or s_out_b_reg1 or s_out_cwr2.PC_SEL,
             po_data => s_out_dreg1
         );
     DEST_REG2 : entity work.pipelineregister
@@ -244,7 +244,7 @@ begin
 
     CWR1: entity work.ControlWordRegister
         port map (
-            pi_rst => s_rst,
+            pi_rst => s_rst or s_out_b_reg1 or s_out_cwr2.PC_SEL,
             pi_clk => s_clk,
             pi_controlWord => s_out_decode_opcode,
             po_controlWord => s_out_cwr1
@@ -273,7 +273,7 @@ begin
         port map (
             pi_data => s_out_signextended,
             pi_clk => s_clk,
-            pi_rst => s_rst,
+            pi_rst => s_rst or s_out_b_reg1 or s_out_cwr2.PC_SEL,
             po_data => s_in_imm_mux
         );
 
@@ -327,7 +327,7 @@ begin
         port map(
             pi_data => s_out_reg_op1,
             pi_clk => s_clk,
-            pi_rst => s_rst,
+            pi_rst => s_rst or s_out_b_reg1 or s_out_cwr2.PC_SEL,
             po_data => s_in_auipc_mux
         );
 
@@ -336,7 +336,7 @@ begin
         port map(
             pi_data => s_out_reg_op2,
             pi_clk => s_clk,
-            pi_rst => s_rst,
+            pi_rst => s_rst or s_out_b_reg1 or s_out_cwr2.PC_SEL,
             po_data => s_in_default_mux
         );
 
@@ -391,7 +391,7 @@ begin
             pi_rst => s_rst,
             po_data => s_out_branchreg
         );
-
+    
     b_sel_reg1 : entity work.single_bit_pipelineregister
         port map( 
             pi_data => s_out_cwr1.IS_BRANCH AND (s_alu_zero XOR s_out_cwr1.CMP_RESULT),

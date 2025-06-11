@@ -18,7 +18,7 @@ END ENTITY;
 ARCHITECTURE structure OF riub_only_RISC_V_tb IS
 
   CONSTANT PERIOD     : TIME := 10 ns;
-  CONSTANT WITH_FLUSH : STD_LOGIC := '0';
+  CONSTANT WITH_FLUSH : STD_LOGIC := '1';
   SIGNAL s_clk        : STD_LOGIC := '0';
   SIGNAL s_rst        : STD_LOGIC;
   SIGNAL cycle        : INTEGER := 0;
