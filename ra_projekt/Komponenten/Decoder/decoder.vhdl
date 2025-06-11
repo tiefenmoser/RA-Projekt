@@ -89,7 +89,7 @@ architecture arc of decoder is
                         po_controlWord.A_SEL <= '1';
                         po_controlWord.PC_SEL <= '1';
                     when bFormat =>
-                        po_controlWord.CMP_RESULT <= v_func3(0) when v_func3(2) = '0' else not v_func3(0) ;
+                        po_controlWord.CMP_RESULT <= v_func3(0) when v_func3(2) = '0' else not v_func3(0) ; -- das ist nachvollziehbar vertrau
                         po_controlWord.IS_BRANCH <= '1';
                         with v_func3 select 
                             po_controlWord.ALU_OP <= SUB_ALU_OP when FUNC3_BEQ,
