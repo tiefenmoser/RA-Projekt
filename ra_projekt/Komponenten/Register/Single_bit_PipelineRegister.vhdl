@@ -1,5 +1,6 @@
 -- 1. Partner: Cornelius Tiefenmoser
 -- 2. Partner: Maxi Gromut
+-- 3. Partner: Rupert Honold
 
 library ieee;
 use ieee.std_logic_1164.all;
