@@ -1,7 +1,7 @@
 -- ========================================================================
 -- Author:       Marcel Rieß
--- Last updated: 23.05.2025
--- Description:  RIU-Only-RISC-V (incomplete RV32I implementation)
+-- Last updated: 10.06.2025
+-- Description:  RIUB-Only-RISC-V (incomplete RV32I implementation)
 --               Supports only R-, I- and U-Instructions.
 -- ========================================================================
 
@@ -163,6 +163,22 @@ ARCHITECTURE structure OF riub_only_RISC_V_tb IS
       mem(48+49+35+2) := Asm2Std("ADDI", 1, 0, 11);
       mem(48+49+35+3) := Asm2Std("ADDI", 1, 0, 10);
     end if;
+    if v_test = 8 then
+  -- Ausgangswert setzen
+  mem(1) := Asm2Std("ADDI", 1, 0, 42);  -- x1 = 42
+
+  -- Shift-Tests
+  mem(5) := Asm2Std("SLLI", 5, 1, 1);   -- x5 = x1 << 1 = 84
+  mem(6) := Asm2Std("SLLI", 6, 1, 4);   -- x6 = x1 << 4 = 672
+  mem(7) := Asm2Std("SRLI", 7, 1, 1);   -- x7 = x1 >> 1 = 21 (logisch)
+  mem(8) := Asm2Std("SRLI", 8, 1, 4);   -- x8 = x1 >> 4 = 2
+  mem(9) := Asm2Std("SRAI", 9, 1, 1);   -- x9 = x1 >> 1 = 21 (arith.)
+  mem(10) := Asm2Std("SRAI", 10, 1, 4);  -- x10 = x1 >> 4 = 2
+
+  -- Optional: negative Werte testen
+  mem(11) := Asm2Std("ADDI", 1, 0, -8);   -- x1 = -8
+  mem(15) := Asm2Std("SRAI", 11, 1, 1);   -- x11 = -4 (arithmetischer Shift)
+end if;
   END PROCEDURE;
 
 BEGIN
@@ -286,6 +302,20 @@ BEGIN
     END LOOP;
     REPORT "==   PASSED   ==";
     END IF;
+
+        REPORT "== TEST 8: Immediate Shifts==";
+    test <= 8;
+    s_rst <= '1'; WAIT FOR PERIOD/2;
+    s_rst <= '0'; WAIT FOR PERIOD/2;
+    load_common_instructions(v_instr,test);
+    s_instructions <= v_instr;
+
+    FOR i IN 1 TO 30 LOOP
+      WAIT UNTIL rising_edge(s_clk);
+      cycle <= i;
+    END LOOP;
+    REPORT "==   PASSED   ==";
+
     IF WITH_FLUSH THEN
     REPORT "== ALLE TESTS INKL. FLUSH ABGESCHLOSSEN ==";
     ELSE
@@ -299,123 +329,158 @@ BEGIN
   BEGIN
     IF test >= 1 and test<=4 THEN
       -- Prüflogik für LUI
-      IF (cycle =  6) THEN check_register(       9,  1, "ADDI" );END IF;
-      IF (cycle =  7) THEN check_register(       8,  2, "ADDI" );END IF;
-      IF (cycle = 11) THEN check_register(       9, 10, "OR"   );END IF;
-      IF (cycle = 12) THEN check_register(      17,  8, "ADD"  );END IF;
-      IF (cycle = 13) THEN check_register(       1, 11, "SUB"  );END IF;
-      IF (cycle = 14) THEN check_register(      -1, 12, "SUB"  );END IF;
-      IF (cycle = 16) THEN check_register(      25, 12, "ADD"  );END IF;
-      IF (cycle = 17) THEN check_register(      -1, 12, "SUB"  );END IF;
-      IF (cycle = 18) THEN check_register(       8,  1, "AND"  );END IF;
-      IF (cycle = 19) THEN check_register(       1, 12, "XOR"  );END IF;
-      IF (cycle = 20) THEN check_register( 8*2**12, 13, "LUI"  );END IF;
-      IF (cycle = 21) THEN check_register(29*2**12, 13, "LUI"  );END IF;
+      case cycle is
+        WHEN  6 => check_register(       9,  1, "ADDI" );
+        WHEN  7 => check_register(       8,  2, "ADDI" );
+        WHEN 11 => check_register(       9, 10, "OR"   );
+        WHEN 12 => check_register(      17,  8, "ADD"  );
+        WHEN 13 => check_register(       1, 11, "SUB"  );
+        WHEN 14 => check_register(      -1, 12, "SUB"  );
+        WHEN 16 => check_register(      25, 12, "ADD"  );
+        WHEN 17 => check_register(      -1, 12, "SUB"  );
+        WHEN 18 => check_register(       8,  1, "AND"  );
+        WHEN 19 => check_register(       1, 12, "XOR"  );
+        WHEN 20 => check_register( 8*2**12, 13, "LUI"  );
+        WHEN 21 => check_register(29*2**12, 13, "LUI"  );
+        WHEN others => null;
+      END CASE;
       end if;
     IF test >= 2 and test<=4 THEN
       -- Prüflogik für AUIPC
       --REPORT "Register " & INTEGER'image(14) &
       --       " enthaelt " & INTEGER'image(to_integer(signed(s_registersOut(14)))) 
       --        ;
-      IF (cycle = 22) THEN check_register(    4164, 14, "AUIPC");END IF;
-      IF (cycle = 23) THEN check_register(    4168, 14, "AUIPC");END IF;
+      case cycle is
+        WHEN 22 => check_register(    4164, 14, "AUIPC");
+        WHEN 23 => check_register(    4168, 14, "AUIPC");
+        WHEN others => null;
+      END CASE;
     END IF;
     IF test = 3 THEN
       -- Prüflogik für JAL
       --REPORT "Register " & INTEGER'image(1) &
       --      " enthaelt " & INTEGER'image(to_integer(signed(s_registersOut(1))));
-       
-      IF (cycle = 24) THEN check_register(       80,15, "JAL"  );END IF;
-      IF (cycle = 28) THEN check_register(        9, 1, "ADDI" );END IF;
-      IF (cycle = 29) THEN check_register(        8, 2, "ADDI" );END IF;
-      IF (cycle = 33) THEN check_register(        9,10, "OR"   );END IF;
-      IF (cycle = 32) THEN check_register(       17, 8, "ADD"  ); END IF;
-      IF (cycle = 33) THEN check_register(        1,11, "SUB"  ); END IF;
-      IF (cycle = 36) THEN check_register(       -1,12, "SUB"  );END IF;
-      IF (cycle = 38) THEN check_register(       25,12, "ADD"  );END IF;
-      IF (cycle = 39) THEN check_register(       -1,12, "SUB"  );END IF;
-      IF (cycle = 40) THEN check_register(         8,2, "AND"  );END IF;
-      IF (cycle = 41) THEN check_register(        1,12, "XOR"  );END IF;
-      IF (cycle = 42) THEN check_register( 8*2**12, 13, "LUI"  );END IF;
-      IF (cycle = 43) THEN check_register(29*2**12, 13, "LUI"  );END IF;
-      IF (cycle = 44) THEN check_register(     4164,14, "AUIPC");END IF;
-      IF (cycle = 45) THEN check_register(     4168,14, "AUIPC");END IF;
+      case cycle is
+        when 24 => check_register(       80,15, "JAL"  );
+        when 28 => check_register(        9, 1, "ADDI" );
+        when 29 => check_register(        8, 2, "ADDI" );
+        when 30 => check_register(        9,10, "OR"   );
+        when 31 => check_register(       17, 8, "ADD"  );
+        when 32 => check_register(        1,11, "SUB"  );
+        when 36 => check_register(       -1,12, "SUB"  );
+        when 38 => check_register(       25,12, "ADD"  );
+        when 39 => check_register(       -1,12, "SUB"  );
+        when 40 => check_register(         8,2, "AND"  );
+        when 41 => check_register(        1,12, "XOR"  );
+        when 42 => check_register( 8*2**12, 13, "LUI"  );
+        when 43 => check_register(29*2**12, 13, "LUI"  );
+        when 44 => check_register(     4164,14, "AUIPC");
+        when 45 => check_register(     4168,14, "AUIPC");
+        when others => null;
+      END CASE;
     END IF;
     IF test = 4 THEN
       -- Prüflogik für JALR
       --  REPORT "Register " & INTEGER'image(10) &
       --  " enthaelt " & INTEGER'image(to_integer(signed(s_registersOut(10))));
-      IF (cycle = 24) THEN check_register(       80,15, "JAL"  );END IF;
-      IF (cycle = 28) THEN check_register(      220,15, "JALR" );END IF;
-      IF (cycle = 33) THEN check_register(        8,10, "OR"   );END IF;
-      IF (cycle = 34) THEN check_register(       16, 8, "ADD"  );END IF;
-      IF (cycle = 35) THEN check_register(        0,11, "SUB"  );END IF;
-      IF (cycle = 36) THEN check_register(        0,12, "SUB"  );END IF;
-      IF (cycle = 37) THEN check_register(       24,12, "ADD"  );END IF;
-      IF (cycle = 38) THEN check_register(        0,12, "SUB"  );END IF;
-      IF (cycle = 39) THEN check_register(        8, 1, "AND"  );END IF;
+      case cycle is
+        WHEN 24 => check_register(       80,15, "JAL"  );
+        WHEN 28 => check_register(      220,15, "JALR" );
+        WHEN 33 => check_register(        8,10, "OR"   );
+        WHEN 34 => check_register(       16, 8, "ADD"  );
+        WHEN 35 => check_register(        0,11, "SUB"  );
+        WHEN 36 => check_register(        0,12, "SUB"  );
+        WHEN 37 => check_register(       24,12, "ADD"  );
+        WHEN 38 => check_register(        0,12, "SUB"  );
+        WHEN 39 => check_register(        8, 1, "AND"  );
+        WHEN others => null;
+      END CASE;
     END IF;
     IF test >= 5 and test <= 6 THEN
       -- Prüflogik für BRANCHES
         -- REPORT "Register " & INTEGER'image(1) &
         -- " enthaelt " & INTEGER'image(to_integer(signed(s_registersOut(1))));
-        IF (cycle =  6) THEN check_register(       9, 1, "ADDI"  );END IF;
-        IF (cycle =  7) THEN check_register(       9, 2, "ADDI"  );END IF;
-        IF (cycle = 12) and (test=6)THEN check_register(       9, 1, "Flush (EX->MEM)"   );END IF;
-        IF (cycle = 13) and (test=6)THEN check_register(       9, 1, "Flush (ID->EX)"   );END IF;
-        IF (cycle = 14) and (test=6)THEN check_register(       9, 1, "Flush (IF->ID)"   );END IF;
-        IF (cycle = 15) THEN check_register(       0, 1, "BEQ"   );END IF;
-        IF (cycle = 22) and (test=6)THEN check_register(      16, 1, "Flush" );END IF;
-        IF (cycle = 25) THEN check_register(       1, 1, "BNE"   );END IF;
-        IF (cycle = 32) and (test=6)THEN check_register(       6, 1, "Flush" );END IF;
-        IF (cycle = 35) THEN check_register(       2, 1, "BLT"   );END IF;
-        IF (cycle = 42) and (test=6)THEN check_register(       9, 1, "Flush" );END IF;
-        IF (cycle = 45) THEN check_register(       3, 1, "BGE"   );END IF;
-        IF (cycle = 52) and (test=6)THEN check_register(      11, 1, "Flush" );END IF;
-        IF (cycle = 55) THEN check_register(       4, 1, "BLTU"  );END IF;
-        IF (cycle = 62) and (test=6)THEN check_register(      15, 1, "Flush" );END IF;
-        IF (cycle = 65) THEN check_register(       5, 1, "BGEU"  );END IF;
+        case cycle is
+          WHEN  6 => check_register(       9, 1, "ADDI"  );
+          WHEN  7 => check_register(       9, 2, "ADDI"  );
+          WHEN 12 =>  if (test=6) then check_register(       9, 1, "Flush (EX->MEM)"   );end if;
+          WHEN 13 =>  if (test=6) then check_register(       9, 1, "Flush (ID->EX)"   );end if;
+          WHEN 14 =>  if (test=6) then check_register(       9, 1, "Flush (IF->ID)"   );end if;
+          WHEN 15 => check_register(       0, 1, "BEQ"   );
+          WHEN 22 =>  if (test=6) then check_register(      16, 1, "Flush" );end if;
+          WHEN 25 => check_register(       1, 1, "BNE"   );
+          WHEN 32 =>  if (test=6) then check_register(       6, 1, "Flush" );end if;
+          WHEN 35 => check_register(       2, 1, "BLT"   );
+          WHEN 42 =>  if (test=6) then check_register(       9, 1, "Flush" );end if;
+          WHEN 45 => check_register(       3, 1, "BGE"   );
+          WHEN 52 =>  if (test=6) then check_register(      11, 1, "Flush" );end if;
+          WHEN 55 => check_register(       4, 1, "BLTU"  );
+          WHEN 62 =>  if (test=6) then check_register(      15, 1, "Flush" );end if;
+          WHEN 65 => check_register(       5, 1, "BGEU"  );
 
-        IF (cycle = 66) THEN check_register(       9, 1, "ADDI"  );END IF;
-        IF (cycle = 67) THEN check_register(       8, 2, "ADDI"  );END IF;
-        IF (cycle = 72) THEN check_register(     666, 1, "BEQ"   );END IF;
-        IF (cycle = 73) THEN check_register(       0, 1, "BEQ"   );END IF;
-        IF (cycle = 80) THEN check_register(     669, 1, "BNE"   );END IF;
-        IF (cycle = 81) THEN check_register(       1, 1, "BNE"   );END IF;
-        IF (cycle = 82) THEN check_register(       6, 1, "BNE"   );END IF;
-        IF (cycle = 88) THEN check_register(     699, 1, "BLT"   );END IF;
-        IF (cycle = 89) THEN check_register(       2, 1, "BLT"   );END IF;
-        IF (cycle = 90) THEN check_register(       9, 1, "BLT"   );END IF;
-        IF (cycle = 96) THEN check_register(     999, 1, "BGE"   );END IF;
-        IF (cycle = 97) THEN check_register(       3, 1, "BGE"   );END IF;
-        IF (cycle = 98) THEN check_register(      11, 1, "BGE"   );END IF;
-        IF (cycle =104) THEN check_register(     996, 1, "BLTU"  );END IF;
-        IF (cycle =105) THEN check_register(       4, 1, "BLTU"  );END IF;
-        IF (cycle =106) THEN check_register(      15, 1, "BLTU"  );END IF;
-        IF (cycle =112) THEN check_register(     966, 1, "BGEU"  );END IF;
-        IF (cycle =113) THEN check_register(       5, 1, "BGEU"  );END IF;
-        IF (cycle =48+49+35+1+4) and (test=6)THEN check_register(      5, 1, "Flush" );END IF;
-        IF (cycle =48+49+35+1+5) and (test=6)THEN check_register(      5, 1, "Flush" );END IF;
-        IF (cycle =48+49+35+1+6) and (test=6)THEN check_register(      5, 1, "Flush" );END IF;
+          WHEN 66 => check_register(       9, 1, "ADDI"  );
+          WHEN 67 => check_register(       8, 2, "ADDI"  );
+          WHEN 72 => check_register(     666, 1, "BEQ"   );
+          WHEN 73 => check_register(       0, 1, "BEQ"   );
+          WHEN 80 => check_register(     669, 1, "BNE"   );
+          WHEN 81 => check_register(       1, 1, "BNE"   );
+          WHEN 82 => check_register(       6, 1, "BNE"   );
+          WHEN 88 => check_register(     699, 1, "BLT"   );
+          WHEN 89 => check_register(       2, 1, "BLT"   );
+          WHEN 90 => check_register(       9, 1, "BLT"   );
+          WHEN 96 => check_register(     999, 1, "BGE"   );
+          WHEN 97 => check_register(       3, 1, "BGE"   );
+          WHEN 98 => check_register(      11, 1, "BGE"   );
+          WHEN 104 => check_register(     996, 1, "BLTU"  );
+          WHEN 105 => check_register(       4, 1, "BLTU"  );
+          WHEN 106 => check_register(      15, 1, "BLTU"  );
+          WHEN 112 => check_register(     966, 1, "BGEU"  );
+          WHEN 113 => check_register(       5, 1, "BGEU"  );
+          WHEN 48+49+35+1+4 =>  if (test=6) then  check_register(      5, 1, "Flush" );end if;
+          WHEN 48+49+35+1+5 =>  if (test=6) then  check_register(      5, 1, "Flush" );end if;
+          WHEN 48+49+35+1+6 =>  if (test=6) then  check_register(      5, 1, "Flush" );end if;
+          WHEN others => null;
+      END CASE;
     END IF;
        IF test = 7 THEN
       -- Prüflogik für JALR 
-      IF (cycle = 24) THEN check_register(       80,15, "JAL"  );END IF;
-      IF (cycle = 24) THEN check_register(        8, 1, "FLUSH"  );END IF;
-      IF (cycle = 25) THEN check_register(        8, 1, "FLUSH"  );END IF;
-      IF (cycle = 26) THEN check_register(        8, 1, "FLUSH"  );END IF;
-      IF (cycle = 28) THEN check_register(      220,15, "JALR" );END IF;
-      IF (cycle = 29) THEN check_register(        8, 1, "FLUSH"  );END IF;
-      IF (cycle = 30) THEN check_register(        8, 1, "FLUSH"  );END IF;
-      IF (cycle = 31) THEN check_register(        8, 1, "FLUSH"  );END IF;
-      IF (cycle = 33) THEN check_register(        8,10, "OR"   );END IF;
-      IF (cycle = 34) THEN check_register(       16, 8, "ADD"  );END IF;
-      IF (cycle = 35) THEN check_register(        0,11, "SUB"  );END IF;
-      IF (cycle = 36) THEN check_register(        0,12, "SUB"  );END IF;
-      IF (cycle = 37) THEN check_register(       24,12, "ADD"  );END IF;
-      IF (cycle = 38) THEN check_register(        0,12, "SUB"  );END IF;
-      IF (cycle = 39) THEN check_register(        8, 1, "AND"  );END IF;
+       case cycle is
+        WHEN 24 => check_register(        8, 1, "FLUSH"  );check_register(       80,15, "JAL"  );
+        WHEN 25 => check_register(        8, 1, "FLUSH"  );
+        WHEN 26 => check_register(        8, 1, "FLUSH"  );
+        WHEN 28 => check_register(      220,15, "JALR" );
+        WHEN 29 => check_register(        8, 1, "FLUSH"  );
+        WHEN 30 => check_register(        8, 1, "FLUSH"  );
+        WHEN 31 => check_register(        8, 1, "FLUSH"  );
+        WHEN 33 => check_register(        8,10, "OR"   );
+        WHEN 34 => check_register(       16, 8, "ADD"  );
+        WHEN 35 => check_register(        0,11, "SUB"  );
+        WHEN 36 => check_register(        0,12, "SUB"  );
+        WHEN 37 => check_register(       24,12, "ADD"  );
+        WHEN 38 => check_register(        0,12, "SUB"  );
+        WHEN 39 => check_register(        8, 1, "AND"  );
+        WHEN others => null;
+      END CASE;
     END IF;
+
+    if test = 8 then
+    -- Prüflogik für shift
+    -- REPORT "Register " & INTEGER'image(1) &
+    -- " enthaelt " & INTEGER'image(to_integer(signed(s_registersOut(1))));
+        
+      case cycle is
+        when  6 => check_register(42, 1, "ADDI");
+        when 11 => check_register(84, 5, "SLLI");
+        when 12 => check_register(672, 6, "SLLI");
+        when 13 => check_register(21, 7, "SRLI");
+        when 14 => check_register(2, 8, "SRLI");
+        when 15 => check_register(21, 9, "SRAI");
+        when 16 => check_register(2, 10, "SRAI");
+        when 17 => check_register(-8, 1, "ADDI");
+        when 20 => check_register(-4, 11, "SRAI");
+        when others => null;
+      end case;
+  end if;
   END PROCESS;
 
 END ARCHITECTURE;

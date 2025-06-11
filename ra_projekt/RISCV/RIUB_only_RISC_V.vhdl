@@ -152,6 +152,11 @@ begin
     ---* Pipeline-Register (IF -> ID) start
     ---********************************************************************
     
+    -- Das flushing wird bei mir Realisiert das ich wenn ich branche oder jumpe die Ersten pipeline registries ein
+    -- reset signal geschickt wird.
+    -- Die ersten sind bei mir die IF_reg, Dest_Reg1, CWR_Reg1, Imm_reg1 Alu OP Reg1 und Reg2
+
+
     -- begin solution:
 
     IF_REG: entity work.pipelineregister

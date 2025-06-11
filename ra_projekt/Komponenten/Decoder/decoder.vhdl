@@ -59,7 +59,7 @@ architecture arc of decoder is
 
                 
                 po_controlWord <= control_word_init;
-                v_shift_I_4th_bit := v_func7(5) when v_func3 = SRA_ALU_OP(2 downto 0);
+                v_shift_I_4th_bit := v_func7(5) when v_func3 = SRA_ALU_OP(2 downto 0) else '0';
                 case v_insFormat is
                     when rFormat => 
                         po_controlWord.REG_WRITE <= '1';
@@ -74,7 +74,6 @@ architecture arc of decoder is
 
                         else
                             po_controlWord.ALU_OP <= v_shift_I_4th_bit & v_func3;
-                            -- po_controlWord.WB_SEL <= "01"; -- i thought i neeeded this i guess not lmao
                         end if;
                     when uFormat =>
                         po_controlWord.I_IMM_SEL <= '1';
