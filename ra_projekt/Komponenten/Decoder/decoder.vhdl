@@ -53,6 +53,10 @@ architecture arc of decoder is
                         v_insFormat := iFormat;  
                     when B_INS_OP =>
                         v_insFormat := bFormat;
+                    when L_INS_OP =>
+                        v_insFormat := iFormat;
+                    when S_INS_OP =>
+                        v_insFormat := sFormat;
                     when others =>
                         v_insFormat := nullFormat;
                 end case;
@@ -71,7 +75,11 @@ architecture arc of decoder is
                             po_controlWord.ALU_OP <= ADD_ALU_OP;
                             po_controlWord.PC_SEL <= '1';
                             po_controlWord.WB_SEL <= "10";
-
+                        elsif v_opcode = L_INS_OP then
+                            po_controlWord.ALU_OP <= ADD_ALU_OP;
+                            po_controlWord.WB_SEL <= "11";
+                            po_controlWord.MEM_READ <= '1';
+                            po_controlWord.MEM_CTR <= v_func3;
                         else
                             po_controlWord.ALU_OP <= v_shift_I_4th_bit & v_func3;
                         end if;
@@ -98,6 +106,11 @@ architecture arc of decoder is
                                                      SLT_ALU_OP when FUNC3_BGE,-- invert the cmp result for this
                                                      SLTU_ALU_op when FUNC3_BGEU, 
                                                      (others => '0') when others;
+                    when sFormat =>
+                        po_controlWord.I_IMM_SEL <= '1';
+                        po_controlWord.ALU_OP <= ADD_ALU_OP;
+                        po_controlWord.MEM_WRITE <= '1';
+                        po_controlWord.MEM_CTR <= v_func3;
                     when others => 
                         po_controlWord <= control_word_init; -- doppelt hält besser oder so
                  end case;

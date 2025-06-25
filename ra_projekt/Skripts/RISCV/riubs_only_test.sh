@@ -39,9 +39,9 @@ ghdl -a --std=08 Komponenten/Register/PipelineRegister.vhdl
 ghdl -a --std=08 Komponenten/Register/Single_bit_PipelineRegister.vhdl
 ghdl -a --std=08 Komponenten/Register/controlwordregister.vhdl
 
-ghdl -a --std=08 RISCV/RIUB_only_RISC_V.vhdl
+ghdl -a --std=08 RISCV/RIUBS_only_RISC_V.vhdl
 
 
-ghdl -a --std=08 Testbenches/RISCV/riub_only_RISC_V_tb.vhdl
-ghdl -e --std=08 riub_only_RISC_V_tb
-ghdl -r --std=08 riub_only_RISC_V_tb --wave=riub_riscv.ghw
+ghdl -a --std=08 Testbenches/RISCV/riubs_only_RISC_V_tb.vhdl
+ghdl -e --std=08 riubs_only_RISC_V_tb
+ghdl -r --std=08 riubs_only_RISC_V_tb --wave=riubs_riscv.ghw

@@ -1,4 +1,4 @@
--- Laboratory RA solutions/versuch2
+-- Laboratory RA solutions/versuch8
 -- Sommersemester 25
 -- Group Details
 -- Lab Date:
@@ -7,7 +7,7 @@
 
 -- ========================================================================
 -- Author:       Marcel Rieß
--- Last updated: 19.03.2025
+-- Last updated: 06.06.2025
 -- Description:  Holds various constants related to the RISC-V instruction
 --               set that are used throughout the implementation
 -- ========================================================================
@@ -58,22 +58,33 @@ package constant_package is
   constant AUIPC_INS_OP : std_logic_vector(OPCODE_WIDTH - 1 downto 0) := "0010111"; -- auipc
 
   -- J-Format
-  constant JAL_INS_OP : std_logic_vector(OPCODE_WIDTH - 1 downto 0) := "1101111"; -- jal
+  constant JAL_INS_OP : std_logic_vector(OPCODE_WIDTH - 1 downto 0) := "1101111";   -- jal
 
   -- B-Format
-  constant B_INS_OP : std_logic_vector(OPCODE_WIDTH - 1 downto 0) := "1100011"; -- beq, all B-Format instructions have the same opcode
+  constant B_INS_OP : std_logic_vector(OPCODE_WIDTH - 1 downto 0) := "1100011";     -- beq, all B-Format instructions have the same opcode
 
   -- S-Format
-  constant S_INS_OP : std_logic_vector(OPCODE_WIDTH - 1 downto 0) := "0100011"; -- sb
+  constant S_INS_OP : std_logic_vector(OPCODE_WIDTH - 1 downto 0) := "0100011";     -- sb
 
   -- I-Format
-  constant JALR_INS_OP : std_logic_vector(OPCODE_WIDTH - 1 downto 0) := "1100111"; -- jalr
+  constant JALR_INS_OP : std_logic_vector(OPCODE_WIDTH - 1 downto 0) := "1100111";  -- jalr
 
-  constant L_INS_OP : std_logic_vector(OPCODE_WIDTH - 1 downto 0) := "0000011"; -- lb
+  constant L_INS_OP : std_logic_vector(OPCODE_WIDTH - 1 downto 0) := "0000011";     -- lb
 
-  constant I_INS_OP : std_logic_vector(OPCODE_WIDTH - 1 downto 0) := "0010011"; -- addi
+  constant I_INS_OP : std_logic_vector(OPCODE_WIDTH - 1 downto 0) := "0010011";     -- addi
 
   -- R-Format
-  constant R_INS_OP : std_logic_vector(OPCODE_WIDTH - 1 downto 0) := "0110011"; -- add
+  constant R_INS_OP : std_logic_vector(OPCODE_WIDTH - 1 downto 0) := "0110011";     -- add
+  
+  -- Load 
+  constant LB_OP    : std_logic_vector(FUNC3_WIDTH - 1 downto 0) := "000";
+  constant LH_OP    : std_logic_vector(FUNC3_WIDTH - 1 downto 0) := "001";
+  constant LW_OP    : std_logic_vector(FUNC3_WIDTH - 1 downto 0) := "010";
+  constant LBU_OP   : std_logic_vector(FUNC3_WIDTH - 1 downto 0) := "100";
+  constant LHU_OP   : std_logic_vector(FUNC3_WIDTH - 1 downto 0) := "101";
 
+  -- Store
+  constant SB_OP    : std_logic_vector(FUNC3_WIDTH - 1 downto 0) := "000";
+  constant SH_OP    : std_logic_vector(FUNC3_WIDTH - 1 downto 0) := "001";
+  constant SW_OP    : std_logic_vector(FUNC3_WIDTH - 1 downto 0) := "010";
 end package constant_package;

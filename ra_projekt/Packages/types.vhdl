@@ -1,3 +1,12 @@
+-- Laboratory RA solutions/versuch8
+-- Sommersemester 25
+-- Group Details
+-- Lab Date:
+-- 1. Participant First and Last Name: Cornelius Tiefenmoser 
+-- 2. Participant First and Last Name:  Maxi Gromut
+-- 3. Participant First and Last Name:  Rupert Honold
+
+
 -- ========================================================================
 -- Author:       Marcel Rieß
 -- Last updated: 02.05.2025
@@ -19,6 +28,9 @@ package types is
     A_SEL        : std_logic; -- used as a MUX selector for ALU
     PC_SEL        : std_logic; -- used as a MUX selector for PC
     WB_SEL       :std_logic_vector( 1 downto 0);
+    MEM_CTR    : std_logic_vector(2 downto 0);                    
+    MEM_READ   : std_logic;
+    MEM_WRITE  : std_logic;
   end record controlWord;
 
   -- allows initialization of control words, used in decoder
@@ -31,7 +43,10 @@ package types is
   IS_BRANCH => '0',
   CMP_RESULT => '0',
   PC_SEL   => '0',
-  WB_SEL   => "00"
+  WB_SEL   => (others => '0'),
+  MEM_CTR     => (others => '0'),
+  MEM_READ    => '0',
+  MEM_WRITE   => '0'
   );
 
   -- enum containig all instruction formats, used in decoder
