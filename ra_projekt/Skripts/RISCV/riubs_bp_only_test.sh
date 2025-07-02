@@ -39,9 +39,9 @@ ghdl -a --std=08 Komponenten/Register/PipelineRegister.vhdl
 ghdl -a --std=08 Komponenten/Register/Single_bit_PipelineRegister.vhdl
 ghdl -a --std=08 Komponenten/Register/controlwordregister.vhdl
 
-ghdl -a --std=08 RISCV/RIUBS_only_RISC_V.vhdl
+ghdl -a --std=08 RISCV/RIUBS_bp_only_RISC_V.vhdl
 
 
-ghdl -a --std=08 Testbenches/RISCV/riubs_only_RISC_V_tb.vhdl
-ghdl -e --std=08 riubs_only_RISC_V_tb
-ghdl -r --std=08 riubs_only_RISC_V_tb --wave=riubs2_riscv.ghw
+ghdl -a --std=08 Testbenches/RISCV/riubs_only_RISC_V_tb2.vhdl
+ghdl -e --std=08 riubs_only_RISC_V_tb2
+ghdl -r --std=08 riubs_only_RISC_V_tb2 --wave=riubs2_riscv.ghw --stop-delta=1000000000000000000

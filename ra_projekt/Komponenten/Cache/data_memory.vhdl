@@ -26,11 +26,11 @@ entity data_memory is
   );
   port (
     pi_adr                :  in   std_logic_vector(adr_width - 1 downto 0)  := (others => '0');             -- Adress of the instruction to select
-    pi_clk                :  in   std_logic;
-    pi_rst                :  in   std_logic;
+    pi_clk                :  in   std_logic := '0';
+    pi_rst                :  in   std_logic := '0';
     pi_ctrmem             :  in   std_logic_vector(3 - 1 downto 0) := (others => '0'); 
-    pi_write              :  in   std_logic;
-    pi_read               :  in   std_logic;
+    pi_write              :  in   std_logic := '0';
+    pi_read               :  in   std_logic := '0';
     pi_writedata          :  in   std_logic_vector(WORD_WIDTH - 1 downto 0) := (others => '0'); 
     po_readdata           : out   std_logic_vector(WORD_WIDTH - 1 downto 0) := (others => '0');
     po_debugdatamemory    : out   memory :=(others => (others => '0'))     
@@ -44,8 +44,8 @@ architecture behavior of data_memory is
 
 begin
   process (pi_clk) is
-  variable signExtensionbyte : std_logic_vector(24-1 downto 0);
-  variable signExtensionhalf : std_logic_vector(16-1 downto 0);
+  variable signExtensionbyte : std_logic_vector(24-1 downto 0) := (others => '0');
+  variable signExtensionhalf : std_logic_vector(16-1 downto 0) := (others => '0');
   begin
 
     if rising_edge(pi_clk) then
