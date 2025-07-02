@@ -12,7 +12,7 @@ entity pipelineregister is
     );
     port(
         pi_data : in std_logic_vector (G_DATA_WIDTH-1 downto 0) := (others => '0');
-        pi_clk,pi_rst: in std_logic;
+        pi_clk,pi_rst, pi_stall: in std_logic := '0';
 
         po_data : out std_logic_vector (G_DATA_WIDTH-1 downto 0) := (others => '0')
     );
@@ -28,7 +28,7 @@ architecture behavior of pipelineregister is
         begin
             if(pi_rst = '1') then
                 po_data  <= (others => '0');
-			elsif rising_edge(pi_clk) then
+			elsif rising_edge(pi_clk) and pi_stall = '0' then
                        po_data <= pi_data;
             end if;
         end process pr;
